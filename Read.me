@@ -1,0 +1,31 @@
+# Consciousness Field Simulation
+
+This repository contains a Python implementation of the **Consciousness Field Theory** described at [dubito-ergo.com](https://dubito-ergo.com). The simulation models a self‑predictive, dissipative field that evolves on a quasicrystal (Penrose) substrate, testing whether the field can actively reshape its own geometry and converge toward a scale‑invariant critical state characterised by the golden ratio φ.
+
+## Overview
+
+The simulation integrates:
+- A **phase‑amplitude field** `C = A e^{iθ}` that represents a local “consciousness” density.
+- **Plastic, state‑dependent coupling** between field elements (weights depend on phase coherence).
+- **Exponential memory** (Friston‑like) implementing a prediction error term.
+- **Pink noise** (1/f) to drive exploration near criticality.
+- **Point movement** via a phase‑gradient force, allowing the geometry to be reshaped by the field.
+
+The code tracks key signatures predicted by the theory:
+- **Eigenvalue ratio** of the state‑dependent graph Laplacian (should converge to φⁿ).
+- **Fractal dimension** of the amplitude field (predicted ≈ 2.382).
+- **Dubito fraction** – relative contribution of the prediction term to the total force.
+- **Geometry drift** – average displacement of points from the original Penrose tiling.
+
+The simulation is designed for ensemble runs, including an ablation (removing the prediction term) to statistically test the necessity of the dubito operator.
+
+## Requirements
+
+- Python 3.8+
+- numpy
+- scipy
+- matplotlib
+
+Install dependencies with:
+```bash
+pip install numpy scipy matplotlib
