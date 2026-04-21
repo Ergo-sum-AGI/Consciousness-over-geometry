@@ -32,7 +32,8 @@ def symmetry_energy_fast(points):
     
     # Subsample for speed with large N
     n_sample = min(500, len(points))
-    idx = np.random.choice(len(points), n_sample, replace=False)
+    rng = np.random.RandomState(42)  # ← local, isolated RNG
+    idx = rng.choice(len(points), n_sample, replace=False)
     points_sub = points[idx]
     
     center = np.mean(points_sub, axis=0)
@@ -58,12 +59,12 @@ def symmetry_energy_fast(points):
     energy = 1.0 - order
     return float(np.clip(energy, 0.0, 1.0)), float(np.clip(order, 0.0, 1.0))
 
-
 def energy_gradient_fast(points, eps=0.005):
-    """Optimized energy gradient for large N"""
+    """Minimal fix: work on copy + deterministic subsampling for ±eps"""
+    points = points.copy()  # ← prevents side effects on caller's array
+    
     N = len(points)
     if N > 500:
-        # Use random subset for gradient computation
         grad_idx = np.random.choice(N, min(200, N), replace=False)
     else:
         grad_idx = np.arange(N)
@@ -74,10 +75,15 @@ def energy_gradient_fast(points, eps=0.005):
         for dim in range(3):
             original = points[i, dim]
             
+            # ← FIX: same seed ensures identical subsample for both perturbations
+            seed = 42 + i * 100 + dim # unique seed for each (i,dim) ensures identical subsampling for ±eps
+            
             points[i, dim] = original + eps
+            np.random.seed(seed)
             energy_plus, _ = symmetry_energy_fast(points)
             
             points[i, dim] = original - eps
+            np.random.seed(seed)  # ← same subsample again
             energy_minus, _ = symmetry_energy_fast(points)
             
             points[i, dim] = original
@@ -85,6 +91,31 @@ def energy_gradient_fast(points, eps=0.005):
     
     return -gradient
 
+# def energy_gradient_fast(points, eps=0.005):
+#    """Optimized energy gradient for large N"""
+#    N = len(points)
+#    if N > 500:
+#        # Use random subset for gradient computation
+#        grad_idx = np.random.choice(N, min(200, N), replace=False)
+#    else:
+#        grad_idx = np.arange(N)
+#    
+#    gradient = np.zeros_like(points)
+#    
+#    for i in grad_idx:
+#        for dim in range(3):
+#            original = points[i, dim]
+#            
+#            points[i, dim] = original + eps
+#            energy_plus, _ = symmetry_energy_fast(points)
+#            
+#            points[i, dim] = original - eps
+#            energy_minus, _ = symmetry_energy_fast(points)
+#            
+#            points[i, dim] = original
+#            gradient[i, dim] = (energy_plus - energy_minus) / (2 * eps)
+#    
+#    return -gradient
 
 def random_points_3d_large(N=1000):
     """Random points on sphere for large N"""
@@ -307,6 +338,7 @@ def symmetry_energy_fast(points):
         return 1.0, 0.0
     
     n_sample = min(500, len(points))
+    np.random.seed(42)  # ← fixed seed for reproducible order readings
     idx = np.random.choice(len(points), n_sample, replace=False)
     points_sub = points[idx]
     
