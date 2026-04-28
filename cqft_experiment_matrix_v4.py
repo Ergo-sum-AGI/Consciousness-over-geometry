@@ -1,5 +1,5 @@
 """
-CQFT Full Experiment Matrix — Final Edition (v4)
+CQFT Full Experiment Matrix — v5 (bug-fix edition)
 =================================================
 DUBITO Ergo AGI Safety Project | Daniel Solis
 
@@ -23,7 +23,16 @@ Usage (Colab):
     os.makedirs(WORK_DIR, exist_ok=True)
     os.chdir(WORK_DIR)
 
-  Step 2 — run:
+  Step 2 — if null model result is at wrong path (/content/gdrive vs /content/drive):
+    import shutil, os
+    OLD = "/content/gdrive/MyDrive/CQFT_experiment/cqft_outputs"
+    NEW = "/content/drive/MyDrive/CQFT_experiment/cqft_outputs"
+    for f in os.listdir(OLD):
+        if f.endswith(".pkl"):
+            shutil.copy2(os.path.join(OLD, f), os.path.join(NEW, f))
+            print("Copied:", f)
+
+  Step 3 — run:
     %run cqft_experiment_matrix.py
 """
 
@@ -41,6 +50,34 @@ import shutil, tempfile, traceback, csv
 warnings.filterwarnings("ignore")
 
 PHI = (1 + np.sqrt(5)) / 2
+
+# ============================================================
+# DRIVE MOUNT VERIFICATION
+# ============================================================
+
+def verify_drive_mounted():
+    """Ensure Google Drive is mounted before proceeding."""
+    drive_path = "/content/drive/MyDrive"
+    if not os.path.exists(drive_path):
+        raise RuntimeError(
+            "Google Drive not mounted! Please run:\n"
+            "  from google.colab import drive\n"
+            "  drive.mount('/content/drive')"
+        )
+    
+    # Test write access
+    test_file = os.path.join(drive_path, ".write_test")
+    try:
+        with open(test_file, 'w') as f:
+            f.write("test")
+        os.remove(test_file)
+        print("✓ Google Drive mounted and writable")
+    except Exception as e:
+        raise RuntimeError(f"Drive is not writable: {e}")
+
+# Call this before any file operations
+if __name__ == "__main__":
+    verify_drive_mounted()
 
 # ============================================================
 # PATHS — Google Drive
@@ -288,22 +325,54 @@ def load_checkpoint(geometry, evolution, seed):
 
 
 def show_status():
+    """
+    Diagnostic scan of OUTPUTS_DIR.
+    Reports result files (simulation data) separately from checkpoints.
+    This is the ground truth for what has been computed and saved.
+    """
+    print("\n  Scanning: {}".format(OUTPUTS_DIR))
+
+    # ── Result files (primary record) ─────────────────────────────────
+    result_files = sorted(f for f in os.listdir(OUTPUTS_DIR)
+                          if f.startswith("result_") and f.endswith(".pkl"))
+    if result_files:
+        print("  Found {} result file(s):".format(len(result_files)))
+        for fname in result_files:
+            path = os.path.join(OUTPUTS_DIR, fname)
+            size = os.path.getsize(path)
+            try:
+                with open(path, "rb") as f:
+                    stored = pickle.load(f)
+                n_steps  = len(stored.get("history", {}).get("step", []))
+                has_ana  = bool(stored.get("analysis"))
+                sim_done = n_steps > 5
+                print("    {} ({:.1f} KB) — sim_complete={} "
+                      "(n_steps={}) analysis={}".format(
+                          fname, size/1024, sim_done, n_steps,
+                          "OK" if has_ana else "MISSING"))
+            except Exception as e:
+                print("    {} ({:.1f} KB) — UNREADABLE: {}".format(
+                    fname, size/1024, e))
+    else:
+        print("  No result files found.")
+
+    # ── Checkpoint manifests (in-progress runs) ────────────────────────
     manifests = sorted(f for f in os.listdir(OUTPUTS_DIR)
                        if f.startswith("ckpt_") and
                        f.endswith("_manifest.json"))
-    if not manifests:
-        print("  [status] No checkpoints found in {}".format(OUTPUTS_DIR))
-        return
-    for mpath in manifests:
-        with open(os.path.join(OUTPUTS_DIR, mpath)) as f:
-            m = json.load(f)
-        print("  [status] {}/{}/s{}: step={}, elapsed={:.2f}h, "
-              "R={}, order={}".format(
-                  m.get("geometry", "?"),
-                  "full" if m.get("evolution") else "null",
-                  m.get("seed", "?"),
-                  m["last_step"], m["elapsed_h"],
-                  m["R_last"], m["order_last"]))
+    if manifests:
+        print("  Found {} checkpoint(s):".format(len(manifests)))
+        for mpath in manifests:
+            with open(os.path.join(OUTPUTS_DIR, mpath)) as f:
+                m = json.load(f)
+            print("    {}/{}/s{}: step={}, elapsed={:.2f}h".format(
+                m.get("geometry", "?"),
+                "full" if m.get("evolution") else "null",
+                m.get("seed", "?"),
+                m["last_step"], m["elapsed_h"]))
+    else:
+        print("  No checkpoints found (normal after a clean run).")
+    print()
 
 
 # ============================================================
@@ -803,45 +872,113 @@ PENROSE_RERUN_MATRIX = [
 ]
 
 
+def _load_result(geom, ev, seed):
+    """
+    Load a saved result file.
+    Returns (stored_dict, n_steps, sim_complete, has_analysis) or None.
+
+    Simulation is considered complete when n_steps > 5.
+    Analysis may be missing (empty dict) independently of simulation state.
+    These two conditions are handled separately so that a complete
+    simulation with missing analysis is NOT rerun from scratch.
+    """
+    out_path = _output_path(geom, ev, seed)
+    if not os.path.exists(out_path):
+        return None, 0, False, False
+    try:
+        with open(out_path, "rb") as f:
+            stored = pickle.load(f)
+        n_steps     = len(stored.get("history", {}).get("step", []))
+        sim_complete = n_steps > 5
+        has_analysis = bool(stored.get("analysis"))
+        return stored, n_steps, sim_complete, has_analysis
+    except Exception as e:
+        print("  [load] Could not read result for {}: {}".format(
+            _run_id(geom, ev, seed), e))
+        return None, 0, False, False
+
+
 def run_matrix(N=1000, steps=12000, resume=True, matrix=None):
+    """
+    Run the experiment matrix.
+
+    Logic (v5 fix):
+      For each condition, check result file independently for:
+        (a) simulation complete  (n_steps > 5)
+        (b) analysis present     (non-empty analysis dict)
+
+      If (a) and (b): skip entirely — load and report.
+      If (a) but not (b): skip simulation, rerun analysis only.
+      If not (a): run full simulation + analysis.
+
+    This means a complete simulation is NEVER rerun just because
+    its analysis dict was empty (e.g. due to a previous analysis error).
+    """
     if matrix is None:
         matrix = EXPERIMENT_MATRIX
 
     all_results = {}
+    sim_complete_set = set()   # simulation data present and valid
 
+    # ── First pass: scan all result files ─────────────────────────────
+    print("  Scanning result files...")
     for geom, ev, seed in matrix:
-        out_path = _output_path(geom, ev, seed)
-        if os.path.exists(out_path):
-            with open(out_path, "rb") as f:
-                stored = pickle.load(f)
-            rid     = _run_id(geom, ev, seed)
-            n_steps = len(stored.get("history", {}).get("step", []))
-            if "analysis" in stored and stored["analysis"] and n_steps > 5:
+        rid = _run_id(geom, ev, seed)
+        stored, n_steps, sim_ok, ana_ok = _load_result(geom, ev, seed)
+        if sim_ok:
+            sim_complete_set.add((geom, ev, seed))
+            status = "sim+analysis OK" if ana_ok else "sim OK, analysis MISSING"
+            print("  [matrix] {} — {} ({} steps)".format(
+                rid, status, n_steps))
+            if ana_ok:
                 all_results[rid] = dict(stored["analysis"])
                 all_results[rid].update(
                     {"geometry": geom, "evolution": ev, "seed": seed})
-                print("  [matrix] Loaded existing: {} ({} steps)".format(
-                    rid, n_steps))
+        else:
+            need = "fresh run" if n_steps == 0 else                    "resume (only {} steps saved)".format(n_steps)
+            print("  [matrix] {} — needs {}".format(rid, need))
+    print()
 
+    # ── Second pass: run/repair each condition ─────────────────────────
     for run_idx, (geom, ev, seed) in enumerate(matrix):
         rid      = _run_id(geom, ev, seed)
         out_path = _output_path(geom, ev, seed)
+        stored, n_steps, sim_ok, ana_ok = _load_result(geom, ev, seed)
 
         print("\n" + "#" * 70)
-        print("# MATRIX RUN {}/{}: {}".format(
-            run_idx + 1, len(matrix), rid))
-        print("#" * 70)
 
-        try:
-            pts, history, A, phase = run_simulation(
-                geometry=geom, evolution=ev, seed=seed,
-                N=N, steps=steps, resume=resume,
-                record_interval=1000, ckpt_interval=500)
-        except Exception as e:
-            print("  SIMULATION FAILED: {}".format(e))
-            traceback.print_exc()
+        # Case 1: fully complete — skip
+        if sim_ok and ana_ok:
+            print("# SKIP {}/{}: {} — already complete".format(
+                run_idx + 1, len(matrix), rid))
+            print("#" * 70)
             continue
 
+        # Case 2: simulation done but analysis missing — repair only
+        if sim_ok and not ana_ok:
+            print("# REPAIR {}/{}: {} — rerunning analysis only".format(
+                run_idx + 1, len(matrix), rid))
+            print("#" * 70)
+            pts     = stored["final_points"]
+            phase   = stored["final_phase"]
+            history = stored.get("history", {})
+            A       = stored["final_A"]
+        else:
+            # Case 3: simulation incomplete — run it
+            print("# MATRIX RUN {}/{}: {}".format(
+                run_idx + 1, len(matrix), rid))
+            print("#" * 70)
+            try:
+                pts, history, A, phase = run_simulation(
+                    geometry=geom, evolution=ev, seed=seed,
+                    N=N, steps=steps, resume=resume,
+                    record_interval=1000, ckpt_interval=500)
+            except Exception as e:
+                print("  SIMULATION FAILED: {}".format(e))
+                traceback.print_exc()
+                continue
+
+        # ── Analysis ──────────────────────────────────────────────────
         print("  Running analysis pipeline...")
         try:
             analysis = compute_signed_gap(pts, phase)
@@ -856,6 +993,7 @@ def run_matrix(N=1000, steps=12000, resume=True, matrix=None):
             traceback.print_exc()
             analysis = {}
 
+        # ── Save updated result ───────────────────────────────────────
         result_payload = {
             "geometry":     geom, "evolution":    ev, "seed": seed,
             "history":      {k: list(v) for k, v in history.items()},
@@ -909,7 +1047,7 @@ def run_matrix(N=1000, steps=12000, resume=True, matrix=None):
 
 def preflight():
     print("\n" + "=" * 60)
-    print("  PRE-FLIGHT v4")
+    print("  PRE-FLIGHT v5")
     print("=" * 60)
 
     for geom in ("random", "square_lattice", "penrose"):
