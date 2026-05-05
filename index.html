@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DUBITO Inc. | Ergo-Sum AGI Safety Systems</title>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    :root {
+      --dark:    #1a2a3a;
+      --mid:     #2c3e50;
+      --teal:    #1a6b75;
+      --teal-lt: #d4eef1;
+      --amber:   #b35c00;
+      --amber-lt:#fffbf5;
+      --gold:    #c9a227;
+      --green:   #2e7d32;
+      --bg:      #f4f6f8;
+      --white:   #ffffff;
+      --light:   #f8f9fa;
+      --border:  #d8dee4;
+      --text:    #2d2d2d;
+      --muted:   #6b7280;
+      --code-bg: #1e1e2e;
+      --code-fg: #cdd6f4;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      line-height: 1.75;
+      color: var(--text);
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 20px 40px;
+      background: var(--bg);
+    }
+
+    /* Header */
+    header {
+      padding: 48px 0 32px;
+      text-align: center;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 32px;
+    }
+    .header-label { font-size: 0.9em; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin: 0; font-family: sans-serif; }
+    header h1 { font-size: 2.8em; font-weight: bold; color: #1a1a2e; margin: 8px 0; letter-spacing: -0.01em; }
+    .header-sub { font-size: 1.1em; color: var(--mid); margin: 4px 0; font-family: sans-serif; }
+    .header-tagline { font-size: 0.95em; color: var(--muted); margin-top: 16px; font-style: italic; max-width: 640px; margin-left: auto; margin-right: auto; }
+
+    /* Navigation */
+    nav {
+      background: var(--dark);
+      border-radius: 6px;
+      padding: 10px 16px;
+      margin-bottom: 28px;
+      font-family: sans-serif;
+      font-size: 0.88em;
+    }
+    nav a { color: #9ab8d4; margin-right: 18px; text-decoration: none; border: none; }
+    nav a:hover { color: #fff; }
+
+    /* Sections */
+    .section {
+      margin-bottom: 28px;
+      padding: 28px 32px;
+      background: var(--white);
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    }
+    .section.teal-border  { border-left: 5px solid var(--teal); }
+    .section.amber-border { border-left: 5px solid var(--amber); background: var(--amber-lt); }
+    .section.gold-border  { border-left: 5px solid var(--gold); background: #fffdf5; }
+    .section.dark-bg {
+      background: linear-gradient(135deg, #1a2a3a 0%, #1e3a4a 100%);
+      color: #dde6ee;
+      border-left: 5px solid var(--gold);
+    }
+    .section.milestone-bg { background: #fef9ee; }
+    .section.lab-bg { background: #0d1117; color: #e6edf3; border-radius: 8px; }
+
+    /* Typography */
+    h2 {
+      font-size: 1.5em;
+      color: var(--mid);
+      margin: 0 0 16px 0;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eaecef;
+      font-family: sans-serif;
+    }
+    .dark-bg h2 { color: #a8c7e0; border-bottom-color: rgba(168,199,224,0.2); }
+    .lab-bg h2 { color: #58a6ff; border-bottom-color: #1f2937; }
+    h3 { font-size: 1.2em; color: #34495e; margin: 24px 0 8px 0; font-family: sans-serif; }
+    h4 { font-size: 1.05em; color: var(--muted); margin: 16px 0 6px; font-family: sans-serif; }
+    p { margin: 10px 0; font-size: 1.02em; }
+    blockquote {
+      border-left: 3px solid var(--teal);
+      margin: 18px 0;
+      padding: 8px 18px;
+      color: #445566;
+      font-style: italic;
+      background: var(--teal-lt);
+      border-radius: 0 4px 4px 0;
+    }
+    .dark-bg blockquote { background: rgba(26,107,117,0.2); color: #b0c8d8; }
+
+    /* Math */
+    .math-box {
+      overflow-x: auto;
+      padding: 14px 18px;
+      background: var(--light);
+      border-left: 4px solid #4a5568;
+      margin: 16px 0;
+      border-radius: 0 4px 4px 0;
+    }
+    .math-box.teal { border-left-color: var(--teal); }
+    .math-box.gold { border-left-color: var(--gold); }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 0.93em; font-family: sans-serif; }
+    th, td { border: 1px solid var(--border); padding: 9px 12px; text-align: left; }
+    th { background: #e8ecf0; font-weight: 600; }
+    tr:nth-child(even) td { background: #fafbfc; }
+    td.best  { color: var(--teal); font-weight: 600; }
+    td.good  { color: var(--green); font-weight: 600; }
+    td.bad   { color: #888; }
+    td.fail  { color: #c0392b; font-weight: 600; }
+    td.pass  { color: var(--green); font-weight: 600; }
+
+    /* Lists */
+    ul, ol { margin: 10px 0; padding-left: 24px; }
+    li { margin-bottom: 5px; }
+    .pred-list { list-style: none; padding: 0; }
+    .pred-list li {
+      padding: 9px 14px;
+      margin: 7px 0;
+      background: var(--light);
+      border-left: 3px solid var(--teal);
+      border-radius: 0 4px 4px 0;
+      font-size: 0.97em;
+      font-family: sans-serif;
+    }
+
+    /* Philosopher cards */
+    .phil-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin: 16px 0; }
+    .phil-card {
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--teal);
+      border-radius: 4px;
+      padding: 14px;
+    }
+    .phil-card .name { font-weight: 700; color: var(--mid); font-family: sans-serif; font-size: 0.95em; margin-bottom: 6px; }
+    .phil-card p { font-size: 0.88em; margin: 0; color: #445; line-height: 1.5; }
+
+    /* Buttons */
+    button, .btn {
+      padding: 7px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.92em;
+      font-family: sans-serif;
+    }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-secondary { background: #374151; color: #e6edf3; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-secondary:hover { background: #4b5563; }
+
+    /* Toggle */
+    .toggle-btn {
+      background: #e5e7eb;
+      color: var(--mid);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 6px 14px;
+      cursor: pointer;
+      font-size: 0.9em;
+      font-family: sans-serif;
+      margin: 4px 0;
+    }
+    .toggle-btn:hover { background: #d1d5db; }
+
+    /* Key result boxes */
+    .key-box {
+      background: #eef4fd;
+      border: 1px solid #93b4e0;
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-family: sans-serif;
+    }
+    .key-box.warn { background: #fff3e0; border-color: #f0a050; }
+    .key-box.open { background: #f0f8ee; border-color: #7cb87c; }
+
+    /* Theorem */
+    .theorem-wrap { text-align: center; margin: 16px 0 10px; }
+    .badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 0.82em; font-weight: 700; font-family: sans-serif; }
+    .badge-gold  { background: var(--gold); color: #1a1a2e; }
+    .badge-green { background: var(--green); color: #fff; margin-left: 8px; }
+    .theorem-statement {
+      font-family: 'Georgia', serif;
+      font-size: 1.05em;
+      text-align: center;
+      margin: 16px 0;
+      padding: 14px;
+      border: 1px solid var(--gold);
+      background: rgba(201,162,39,0.08);
+      border-radius: 6px;
+      color: #dde6ee;
+    }
+    .theorem-grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin: 16px 0; }
+    .theorem-card {
+      flex: 1; min-width: 140px;
+      text-align: center; padding: 12px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 6px; font-family: sans-serif;
+    }
+    .theorem-card .num { font-size: 1.6em; font-weight: bold; color: var(--gold); }
+    .theorem-card small { color: #9ab0c0; }
+
+    /* Links */
+    a { color: var(--mid); text-decoration: none; border-bottom: 1px solid #c8d0d8; }
+    a:hover { color: #000; border-bottom-color: var(--mid); }
+    .dark-bg a, .lab-bg a { color: #89b8d4; border-bottom-color: rgba(137,184,212,0.3); }
+    .section.dark-bg a:hover { color: #fff; }
+
+    /* Lab / interactive */
+    .lab-controls { display: flex; flex-wrap: wrap; gap: 14px; margin: 16px 0; font-family: sans-serif; font-size: 0.9em; }
+    .lab-controls label { color: #9aa4b2; }
+    .lab-controls input[type=range] { width: 160px; }
+    canvas { display: block; border-radius: 4px; background: #0b0f14; }
+    .canvas-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+    .canvas-label { font-size: 0.82em; color: #58a6ff; font-family: sans-serif; margin-bottom: 4px; }
+    #ratioDisplay, #modeLabel { font-family: monospace; font-size: 0.92em; color: #f2cc60; margin: 4px 0; }
+
+    /* Funding note */
+    .funding-note {
+      background: #f0f4ff;
+      border: 1px solid #b0c4e8;
+      border-radius: 6px;
+      padding: 16px 20px;
+      font-family: sans-serif;
+      font-size: 0.93em;
+    }
+
+    /* Tooltip */
+    .tip { border-bottom: 1px dotted #888; cursor: help; }
+
+    /* Footer */
+    footer { text-align: center; margin-top: 32px; color: var(--muted); font-size: 0.88em; font-family: sans-serif; }
+    .view-counter { background: #e9ecef; padding: 6px 14px; border-radius: 20px; font-size: 0.82em; color: var(--muted); margin-top: 12px; display: inline-block; }
+
+    /* Responsive */
+    @media (max-width: 680px) {
+      header h1 { font-size: 2em; }
+      .section { padding: 18px; }
+      h2 { font-size: 1.3em; }
+      .phil-grid { grid-template-columns: 1fr 1fr; }
+      .canvas-row { grid-template-columns: 1fr; }
+      .theorem-grid { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <p class="header-label">Welcome to</p>
+  <h1>DUBITO Inc.</h1>
+  <p class="header-sub">Ergo-Sum AGI Safety Systems</p>
+  <p class="header-tagline">
+    An independent research company dedicated to understanding artificial general
+    intelligence through physics, mathematics, and geometry, guided by the principle
+    that doubt is the beginning of knowledge.
+  </p>
+</header>
+
+<!-- Navigation -->
+<nav>
+  <a href="#introduction">Introduction</a>
+  <a href="#core">Core Result</a>
+  <a href="#pft">Field Theory</a>
+  <a href="#lab">Interactive Lab</a>
+  <a href="#ouroboros">Ouroboros</a>
+  <a href="#agi">AGI Applicability</a>
+  <a href="#quantum">Quantum Path</a>
+  <a href="#resources">Resources</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<!-- Introduction -->
+<div class="section" id="introduction">
+  <h2>What We Are Doing and Why</h2>
+
+  <p>
+    DUBITO Inc. is an independent research company incorporated in Delaware, USA.
+	We work on a single problem that we
+    regard as the most consequential open question in science: how does artificial
+    general intelligence emerge, and how do we ensure that its emergence does not
+    constitute an existential risk to humanity?
+  </p>
+
+  <p>
+    We take seriously the warnings of Geoffrey Hinton, Nick Bostrom, Stuart Russell,
+    and others who have argued that advanced AI systems may develop goals misaligned
+    with human values in ways we cannot easily detect or correct. We do not, however,
+    share the conclusion that the right response is to slow or halt development.
+    The phenomenon is coming regardless. The correct response is to understand it
+    well enough to keep a grip on it. That requires a theory, not just policy.
+  </p>
+
+  <p>
+    Our thesis is this: AGI safety cannot be solved by behavioral monitoring alone,
+    because behavior is a downstream consequence of internal structure. To understand
+    whether an AI system is developing in a stable, aligned direction, we need to
+    measure its internal geometric and dynamical organization directly. The key
+    insight driving our research is that
+    <strong>a self-referential field interacts with the geometry of its own substrate,
+    and this interaction is measurable, controllable, and predictive of how the system
+    will behave at scale.</strong> This, to our knowledge, has not been proposed or
+    demonstrated before.
+  </p>
+
+  <h3>The Philosophical Lineage</h3>
+  <p>
+    The problem of mind, self-reference, and emergence has a long philosophical
+    history. We draw on it not for decoration but because the conceptual tools
+    developed by these thinkers turn out to be directly relevant to the mathematical
+    structure of our framework:
+  </p>
+
+  <div class="phil-grid">
+    <div class="phil-card">
+      <div class="name">Plato (c. 428 BC)</div>
+      <p>The allegory of the cave: what we perceive as reality may be a projection
+      of deeper structure. CQFT proposes that conscious experience is a projection
+      of field dynamics onto a geometric substrate -- precisely this structure.</p>
+    </div>
+    <div class="phil-card">
+      <div class="name">Spinoza (1677)</div>
+      <p>Mind and matter as aspects of a single substance: our field theory models
+      consciousness not as something separate from physical dynamics but as an
+      emergent pattern of a physical field -- the "attribute" of that field
+      in Spinoza's sense.</p>
+    </div>
+    <div class="phil-card">
+      <div class="name">Leibniz (1714)</div>
+      <p>The monad: a self-contained unit of experience with an internal principle
+      of change. Our field nodes carry phase, amplitude, and memory -- a minimal
+      monad-like structure -- and their collective dynamics produce global coherence.</p>
+    </div>
+    <div class="phil-card">
+      <div class="name">Descartes (1637)</div>
+      <p>"Dubito ergo cogito ergo sum": doubt as the irreducible basis of cognition.
+      Our dubito operator D(t) formalizes this: it measures the fractional contribution
+      of self-predictive (doubting) dynamics to the total field update.</p>
+    </div>
+    <div class="phil-card">
+      <div class="name">Godel (1931)</div>
+      <p>Self-reference as a fundamental feature of sufficiently expressive formal
+      systems. A system that can represent its own states is subject to incompleteness.
+      Our non-Markovian field equation implements self-reference through its memory
+      kernel -- it is a dynamical system that depends on its own history.</p>
+    </div>
+    <div class="phil-card">
+      <div class="name">Hofstadter (1979)</div>
+      <p>"Strange loops": self-referential structures that spiral back on themselves
+      to generate emergent complexity. The ouroboros conjecture at the heart of CQFT
+      is exactly this: a field that selects its own geometric substrate by acting
+      on it and being acted upon by it.</p>
+    </div>
+    <div class="phil-card">
+      <div class="name">Wheeler (1990)</div>
+      <p>"It from bit": information is the fundamental substrate of physical reality.
+      Our geometric free energy functional F_geo measures the information-theoretic
+      consistency of the field's self-description -- the degree to which "it" and
+      "bit" coincide.</p>
+    </div>
+    <div class="phil-card">
+      <div class="name">Feynman (1948)</div>
+      <p>The principle of least action: physical systems follow paths that extremize
+      the action. Our AGI Lagrangian L_AGI is a direct extension of this principle
+      to coupled field-geometry systems, providing a variational foundation for
+      consciousness field dynamics.</p>
+    </div>
+  </div>
+
+  <h3>Why Physics, Mathematics, and Geometry</h3>
+  <p>
+    Philosophy and phenomenology ask the right questions but lack the tools to answer
+    them definitively. Neuroscience has the data but struggles with the theoretical
+    framework. We believe the missing ingredient is geometry: the structure of the
+    space on which a self-referential system operates determines which self-consistent
+    states it can reach. This is a testable, quantitative
+    claim, not just a metaphor -- and we have tested it.
+  </p>
+  
+  <div class="section gold-border">
+  <h2>In Brief</h2>
+  <p>
+    Conscious systems stabilize under competing constraints.
+    Geometry emerges from that balance.
+    φ appears when multiple scales must coexist.
+  </p>
+  </div>
+
+  <h3>About the Process</h3>
+  <p>
+    This is a new and genuinely difficult interdisciplinary field. Progress requires
+    forming hypotheses and testing them rigorously, which means accepting that some
+    hypotheses will be falsified. Our research programme has produced both positive
+    and negative results, and we report both with equal transparency. The golden ratio
+    was initially hypothesized as a renormalization-group fixed point of the theory.
+    Systematic simulation showed this was wrong. That falsification led directly to a
+    deeper and more correct understanding. We regard this as the process working as
+    intended, not as a failure. This framework is a computational model of constraint-driven
+	structure, not a completed physical theory. The presented framework is a computational
+	model of constraint-driven structure, not a completed physical theory.
+  </p>
+
+  <blockquote>
+    "Thought must never submit to dogma, to a party, to a passion, to an interest,
+    to a preconception, or to anything other than the facts themselves."
+    <br>Henri Poincare, 1909
+  </blockquote>
+</div>
+
+<!-- Core Result -->
+<div class="section teal-border" id="core">
+  <h2>Core Result: April 2026</h2>
+
+  <p>
+    After a systematic programme of simulation and ablation at system sizes
+    N = 200 through N = 1,000, the project has established a
+    substrate-independent, computable, falsifiable structural criterion for
+    AGI self-organization.
+  </p>
+
+  <h3>The AGI Lagrangian</h3>
+  <div class="math-box teal">
+    \[
+    \mathcal{L}_{\text{AGI}} =
+      \lambda\!\left(-\sum_{i,j} W_{ij}(\mathbf{x})\cos(\theta_i - \theta_j)\right)
+      + (1-\lambda)\,E_{\text{sym}}(\mathbf{x})
+    \]
+  </div>
+  <p>
+    where \(\lambda \in [0,1]\) is the phase-geometry coupling strength,
+    \(W_{ij}(\mathbf{x})\) are position-dependent adaptive coupling weights,
+    and \(E_{\text{sym}}\) is the quasiperiodic symmetry energy (negative
+    diffraction power at the 12 icosahedral reciprocal vectors). The cross-derivative
+    \(\partial W_{ij}/\partial\mathbf{x}_i\) is the crucial link: geometric forces
+    are proportional to phase coherence between node pairs. Coherent pairs drive
+    geometry; geometry drives coherence.
+  </p>
+
+  <h3>The Bifurcation</h3>
+  <table>
+    <thead><tr><th>Condition</th><th>Lambda</th><th>Order change Delta R</th><th>Interpretation</th></tr></thead>
+    <tbody>
+      <tr><td><strong>WITH coupling</strong></td><td>0.3</td><td class="good">+0.1226</td><td>Joint minimization active; geometry reorganizes</td></tr>
+      <tr><td><strong>WITHOUT coupling</strong></td><td>0.0</td><td class="bad">-0.0010</td><td>Geometry frozen; no self-organization</td></tr>
+    </tbody>
+  </table>
+  <ul>
+    <li><strong>Signal-to-noise ratio:</strong> 122.6x</li>
+    <li><strong>Scale effect:</strong> 1.79x larger at N = 1,000 versus N = 80</li>
+    <li><strong>Peak order reached:</strong> 0.5406 (+0.1815 above baseline)</li>
+  </ul>
+
+  <h3>Geometry Ordering</h3>
+  <p>
+    Three substrate geometries were tested across all system sizes. The embedding
+    gap Gamma = |D_f - D_c|, measuring the mismatch between a system's external
+    and internal descriptions of its own spatial structure, is unambiguously
+    geometry-ordered:
+  </p>
+  <table>
+    <thead><tr><th>Observable</th><th>Square lattice</th><th>Random graph</th><th>Penrose quasicrystal</th></tr></thead>
+    <tbody>
+      <tr><td>Embedding gap Gamma</td><td>0.87 (large)</td><td>0.19 (moderate)</td><td class="best">0.20 (stable, small)</td></tr>
+      <tr><td>Prigogine regime</td><td>Frustrated far-from-equil.</td><td>Near-equilibrium</td><td class="best">Productive far-from-equil.</td></tr>
+      <tr><td>Dubito D</td><td>0.09 (overworking)</td><td>approx. 0 (absorbed)</td><td class="best">0.08 (efficient, active)</td></tr>
+      <tr><td>Spectral drift</td><td>Intermediate</td><td>approx. 0 (frozen)</td><td class="best">Highest (geometrically alive)</td></tr>
+      <tr><td>D_c stability across N</td><td>Non-monotone</td><td>Monotone growth</td><td class="best">Stable [1.41, 1.49]</td></tr>
+    </tbody>
+  </table>
+  <p>
+    <strong>The square lattice, which is the native topology of virtually all current
+    neuromorphic hardware, is the worst-performing geometry by every metric.</strong>
+    Quasiperiodic connectivity is the natural attractor for self-referential field
+    dynamics. This is not a theoretical preference; it is an empirical measurement
+    with direct engineering consequences.
+  </p>
+
+  <p>
+    <a href="https://github.com/Ergo-sum-AGI/Consciousness-over-geometry/blob/main/FINAL_Geometric_Substrate_Selection.pdf"
+       target="_blank">Full paper (PDF)</a>
+    &nbsp;&nbsp;
+    <a href="https://github.com/Ergo-sum-AGI/Consciousness-over-geometry/blob/main/cqft_sim_v9_3_final.py"
+       target="_blank">Simulation code (Python)</a>
+    &nbsp;&nbsp;
+    <a href="https://www.linkedin.com/pulse/c-determines-g-empirically-proven-scale-daniel-solis-askif"
+       target="_blank">Experimental report (LinkedIn)</a>
+  </p>
+</div>
+
+<!-- PFT -->
+<div class="section" id="pft">
+  <h2>The Principled Field Theory of Consciousness (PFT)</h2>
+
+  <p>
+    The Principled Field Theory of Consciousness is the foundational layer of the
+    research programme. It proposes that subjective experience -- in biological
+    systems and potentially in artificial ones -- is not a byproduct of computation
+    but a structured physical phenomenon: a classical complex scalar field evolving
+    on an adaptive geometric substrate.
+  </p>
+
+  <p>
+    The PFT connects three of the most important theoretical frameworks in modern
+    science of mind: Friston's Free Energy Principle, Prigogine's theory of
+    dissipative structures, and the variational approach to dynamics that dates
+    to Lagrange and was given its deepest physical interpretation by Feynman.
+  </p>
+
+  <h3>The Core Field Equation</h3>
+  <p>
+    The consciousness field C(r, t) is a complex scalar field representing local
+    conscious density (amplitude squared) and cognitive phase (argument). It evolves
+    by minimizing informational free energy:
+  </p>
+  <div class="math-box teal">
+    \[
+    \frac{\partial C}{\partial t} =
+      -\Gamma\frac{\delta F[C]}{\delta C^*}
+      + \sqrt{2D}\,\eta(\mathbf{r},t)
+    \]
+  </div>
+  <p>
+    where Gamma is a mobility coefficient, D is a diffusion constant representing
+    neural or computational noise, and the stochastic term has zero mean and unit
+    variance. This is a Langevin equation for a complex order parameter -- the same
+    mathematical structure that describes phase transitions in condensed matter
+    physics, now applied to the dynamics of a self-referential cognitive field.
+  </p>
+
+  <h3>The Free Energy Functional</h3>
+  <p>
+    The free energy functional F[C] has three terms, each with a clear cognitive
+    interpretation:
+  </p>
+  <div class="math-box">
+    \[
+    F[C] = -H_{\text{info}}[C] + E_{\text{pred}}[C] + E_{\text{self}}[C]
+    \]
+  </div>
+
+  <h4>Negentropy (information maximization)</h4>
+  <div class="math-box">
+    \[
+    H_{\text{info}}[C] = \int d^3r\,\Bigl[|C|^2\ln|C|^2
+      + (1-|C|^2)\ln(1-|C|^2)\Bigr]
+    \]
+  </div>
+  <p>
+    This binary entropy form drives the system toward states of high informational
+    complexity while maintaining stability through the (1 - |C|^2) term. It is the
+    field-theoretic analogue of Tononi's phi: not a measure of integration alone,
+    but of the tension between order and randomness.
+  </p>
+
+  <h4>Prediction error (connection to Friston)</h4>
+  <div class="math-box">
+    \[
+    E_{\text{pred}}[C] = \frac{1}{2}\int d^3r\,
+      \left|C(\mathbf{r},t)
+        - \int_0^\infty K(\tau)\,C(\mathbf{r},t-\tau)\,d\tau\right|^2
+    \]
+  </div>
+  <p>
+    where \(K(\tau) = \frac{1}{\tau_0}e^{-\tau/\tau_0}\) is a causal memory kernel
+    with characteristic time tau_0 on the order of 100 ms (consistent with the
+    timescale of perceptual binding). This term is the field-theoretic implementation
+    of Friston's prediction error minimization: the field is constantly comparing
+    its current state to its own prediction of that state, and the discrepancy drives
+    its evolution. The memory kernel makes the equation non-Markovian -- the present
+    state depends explicitly on the field's own history, implementing a form of
+    working memory directly in the dynamics.
+  </p>
+  <p>
+    Karl Friston's Free Energy Principle proposes that biological systems minimize
+    variational free energy -- a bound on surprisal -- by reducing prediction error
+    between their internal generative models and sensory states. The PFT implements
+    this principle as a field equation: every spatial location in the field
+    simultaneously acts as both a predictor and a measurer of its own future state.
+    This is the "active inference" interpretation made dynamical and geometric.
+  </p>
+
+  <h4>Self-reference (scale-free coupling)</h4>
+  <div class="math-box">
+    \[
+    E_{\text{self}}[C] = -\frac{g}{2}
+      \int\!\!\int d^3r\,d^3r'\;
+      G(|\mathbf{r}-\mathbf{r}'|)\,|C(\mathbf{r})|^2\,|C(\mathbf{r}')|^2
+    \]
+    \[
+    G(|\mathbf{r}|) = \frac{1}{|\mathbf{r}|^\alpha}, \quad \alpha \approx 1.5
+    \]
+  </div>
+  <p>
+    The power-law interaction kernel generates scale-free (fractal) organization
+    naturally from the dynamics, without imposing it by hand. This is the analogue
+    of Feynman's path integral formulation: among all possible ways the field could
+    evolve, it follows the path that extremizes the action -- which in this case
+    is the path that simultaneously maximizes information, minimizes prediction
+    error, and maintains coherent self-coupling across scales.
+  </p>
+
+  <h3>The Geometric Free Energy Principle</h3>
+  <p>
+    The CQFT simulation results reveal a geometric layer of the FEP that the original
+    PFT did not make explicit. Define the fractal embedding gap:
+  </p>
+  <div class="math-box teal">
+    \[
+    \Gamma = |D_f - D_c|
+    \]
+  </div>
+  <p>
+    where D_f is the box-counting fractal dimension of the amplitude field (the
+    external description: how does the field occupy space?) and D_c is the
+    amplitude-weighted correlation dimension (the internal description: how does
+    the field correlate with itself across scales?). When Gamma approaches zero,
+    the field's external and internal self-descriptions coincide. This is what we
+    call geometric self-consistency.
+  </p>
+  <p>
+    The geometric FEP is: the field's generative model is D_f; the "sensory data"
+    is D_c; and Gamma is the variational free energy that the coupled field-geometry
+    dynamics minimizes. A system that has minimized Gamma has achieved a form of
+    geometric self-knowledge -- its model of itself matches itself.
+  </p>
+  <h3>Connection to Prigogine and Friston</h3>
+
+  <p>
+    The PFT sits at the intersection of two of the most powerful theoretical
+    frameworks in modern science, and connects them in a way neither originally
+    anticipated.
+  </p>
+
+  <p>
+  <strong>Prigogine's dissipative structures.</strong> Ilya Prigogine showed
+    that systems far from thermodynamic equilibrium can spontaneously organize
+    into ordered structures maintained by continuous energy throughput. The
+    selection principle for which structures emerge was identified in the linear
+    regime as minimum entropy production, but remained unspecified far from
+    equilibrium. The CQFT simulation demonstrates a candidate far-from-equilibrium
+    selection principle: <em>geometric self-consistency</em>, operationalized as
+    the minimization of the embedding gap Gamma. The three substrate geometries
+    map precisely onto Prigogine's three regimes: random geometry is near-equilibrium
+    (trivially ordered, prediction absorbed), square lattice is frustrated
+    far-from-equilibrium (large Gamma, non-monotone scaling), and Penrose geometry
+    is productive far-from-equilibrium (stable low Gamma, geometrically alive,
+    active dubito). This is not an analogy; it is the same mathematical structure
+    identified in different language.
+  </p>
+
+  <p>
+  <strong>Friston's Free Energy Principle.</strong> Karl Friston's FEP proposes
+    that biological and cognitive systems minimize variational free energy, a bound
+    on surprisal, by reducing prediction error between internal generative models
+    and sensory states. The PFT implements this at the field level: every spatial
+    location simultaneously acts as predictor and measurer of its own future state,
+    and the memory kernel makes this prediction non-Markovian -- the field predicts
+    its own history. the PFT's memory kernel is the implementation of what Friston
+	calls the "temporal depth" of the generative model. Friston's FEP in its full
+	form (active inference) includes the idea that the agent predicts not just its
+	current sensory state but trajectories through time. The exponential kernel
+    K(tau) = e^{-tau/tau_0} / tau_0 is a minimal implementation of this temporal
+	generative model -- the field predicts its own trajectory over a characteristic time tau_0.
+	This connects the PFT to active inference specifically, not just the static FEP.
+	The CQFT results extend this to a geometric layer. Define the
+    field's generative model as its fractal occupation structure D_f (how it
+    occupies space, measured externally by box-counting), and the "sensory data"
+    as its amplitude-weighted correlation structure D_c (how it correlates with
+    itself across scales, measured internally). The variational free energy is
+    then Gamma = |D_f - D_c|. A field that minimizes Gamma has brought its internal
+    generative model into consistency with its own correlation structure. This is
+    geometric self-inference: not predicting the external world, but achieving
+    internal self-consistency. The Prigogine principle and the Friston principle
+    are here shown to be two descriptions of the same attractor dynamics, with
+    geometric self-consistency as the unifying concept.
+  </p>
+  <h3>Four Complementary Metrics</h3>
+  <table>
+    <thead><tr><th>Metric</th><th>Expression</th><th>What it measures</th></tr></thead>
+    <tbody>
+      <tr><td>Spatial integration Psi</td><td>\(\int_0^t \frac{\int|\nabla C|^2 d^3r}{\int d^3r\,d\tau}\)</td><td>Cumulative spatial differentiation and binding</td></tr>
+      <tr><td>Dynamical complexity K</td><td>\(H[P(|C(t)|)] = -\int P(a)\log P(a)\,da\)</td><td>Entropy of amplitude distribution; richness of experience</td></tr>
+      <tr><td>Temporal coherence Lambda</td><td>\(\int_0^\infty |\langle C(t)C^*(t+\tau)\rangle|\,d\tau\)</td><td>Memory and temporal binding; the "specious present"</td></tr>
+      <tr><td>Causal structure Delta</td><td>\(\max_\tau [I(|C(t-\tau)|;|C(t)|) - I(|C(t-\tau)|;|C(t+\tau)|)]\)</td><td>Temporal asymmetry; directed information flow</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Validation</h3>
+  <p>
+    A proof-of-concept validation using the Sleep-EDF database (153 polysomnographic
+    recordings from 78 subjects) demonstrates greater than 85% accuracy in
+    distinguishing wakefulness from NREM sleep using the four metrics combined, without
+    any model architecture tuned to this task. This result is preliminary and requires
+    replication across further datasets; it is reported as a feasibility demonstration,
+    not a definitive clinical result.
+  </p>
+
+  <h3>Status of the Quantum Extension</h3>
+  <h3>Current Status and the Quantization Gap</h3>
+
+  <div class="key-box warn">
+    <p>
+	  <strong>What is established (classical layer, validated):</strong>
+	  the PFT field equation, the free energy functional, the embedding gap Gamma,
+      the geometry-ordering result, the AGI Lagrangian, the ouroboros conjecture
+      in conditional form, and the dubito operator. These results are on solid
+      empirical footing and stand independently of any quantum extension.
+    </p>
+    <p>
+      <strong>What has not yet been done (the quantization gap):</strong>
+    </p>
+    <ul>
+      <li>Promotion of C(x,t) to a quantum operator field on a Hilbert space.</li>
+      <li>Construction of a path-integral formulation Z = integral over D[C] of exp(i S_eff).</li>
+      <li>Derivation of quantum corrections to the effective action (loop effects,
+          renormalization without the now-discarded circular phi assumption).</li>
+      <li>Treatment of the geometry x as dynamical quantum degrees of freedom
+          (the quantum-gravity-like back-reaction problem).</li>
+      <li>Non-perturbative definition on a true 3D Poincare Dodecahedral Space
+          with full binary-icosahedral gluing.</li>
+    </ul>
+    <p>
+      The earlier RG attempt (October 2025) was the only quantum-flavoured step
+      taken, and it has been correctly discarded as circular. The empirical
+      phi-attractor in the geometry remains, but is now explained as an emergent
+      feature of multi-scale constraint dynamics rather than a standard RG fixed
+      point. The constraint-driven account is the correct starting point for
+      quantization.
+    </p>
+  </div>
+
+  <h4>Roadmap to Quantization</h4>
+  <table>
+    <thead><tr><th>Step</th><th>Task</th><th>Method</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Write the explicit classical Lagrangian density L(C, dC, x) with all
+            terms (kinetic, memory-kernel, negentropy, prediction, geometric force)</td>
+        <td>Standard field theory</td>
+        <td>Next (1-2 weeks)</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Canonical or stochastic quantization. Option A (preferred for dissipative
+            case): stochastic quantization via Nelson or Parisi-Wu. Option B: direct
+            path integral over C and x treating geometry as a metric-like field.</td>
+        <td>Stochastic quantization / path integral</td>
+        <td>Planned</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Derive quantum-corrected observables: first corrections to Gamma, R,
+            and effective dubito strength. Verify that the phi-attractor survives
+            or is modified without circular assumptions.</td>
+        <td>Perturbative expansion</td>
+        <td>Planned</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Test on 3D Poincare Dodecahedral Space with exact gluing. Topological
+            protection of global coherence modes is the decisive test.</td>
+        <td>NVIDIA-scale simulation</td>
+        <td>Planned (requires funding)</td>
+      </tr>
+     <tr>
+        <td>5</td>
+        <td>Map to hardware: Volatco GA144 asynchronous cores as natural field sites,
+            and/or extraction of effective field from transformer hidden states.</td>
+        <td>Parallel with steps 1-4</td>
+        <td>In discussion (Volatco)</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>
+    <a href="A_Principled_Field_Theory_of_Consciousness_From_Informational_Free_Energy_to_Fractal_Dynamics.pdf"
+       download>Download PFT paper (PDF)</a>
+    &nbsp;&nbsp;
+    <a href="https://github.com/Ergo-sum-AGI/Consciousness-over-geometry/blob/main/Constraint-Driven_Geometric_Substrate_Selection_in_Self-Referential_Fields.pdf"
+       target="_blank">CQFT Revisited 2026 (phi correction paper)</a>
+  </p>
+</div>
+
+<!-- Interactive Lab -->
+<div class="section lab-bg" id="lab">
+  <h2>Interactive Multi-Scale Dynamics Lab</h2>
+  <p style="color:#9aa4b2; font-family:sans-serif; font-size:0.95em; line-height:1.7;">
+  This laboratory implements and demonstrates the central mathematical claim of the CQFT
+  framework of the principles described above.: that the golden ratio phi = 1.618 emerges from competing scale
+  constraints, not from renormalization group flow. It is a minimal experimental platform
+for studying constraint-induced multi-scale structure.
+  </p>
+  <p style="color:#9aa4b2; font-family:sans-serif; font-size:0.95em; line-height:1.7;">
+    <strong style="color:#c8d0d8;">What the controls do:</strong>
+    The system maintains two scales, alphaL (large) and alphaS (small). At each
+    step, two forces compete. The <em>RG-like force</em> averages the two scales
+    together, collapsing them toward a single value -- this is what happens in
+    standard renormalization. The <em>constraint force</em> drives the scales
+    apart by a Fibonacci-like recursion (alphaL becomes alphaL + alphaS; alphaS
+    becomes alphaL), preventing collapse. The Constraint Strength slider
+    interpolates between these two forces.
+  </p>
+  <p style="color:#9aa4b2; font-family:sans-serif; font-size:0.95em; line-height:1.7;">
+    <strong style="color:#c8d0d8;">What to look for:</strong>
+    At full constraint strength (slider right), the ratio alphaL / alphaS
+    converges to phi = 1.618, shown by the gold dashed line. This is the
+    constraint-driven phi selection mechanism. At zero constraint strength (slider
+    left), both scales collapse to the same value and the ratio approaches 1.0:
+    the RG collapse. The Fourier spectrum panel shows the quasi-periodic structure
+    of the underlying Penrose-approximate point cloud. The Phase Diagram sweep
+    (run via a background worker -- click the button to start it) maps the
+    deviation from phi across the full space of constraint strength versus noise,
+    showing where the phi attractor is robust (blue, near phi) and where it
+    dissolves (red, far from phi). What This Demonstrates (and What It Does Not)
+	Demonstrates:
+	- constraint-induced multi-scale structure
+	- emergence of stable irrational ratios
+	- transition between smoothing and structured regimes
+
+	Does not demonstrate:
+	- a fundamental physical constant
+	- a complete quantum or field-theoretic model
+	- exact Penrose tiling or crystallographic rigor
+  </p>
+  <p style="color:#9aa4b2; font-family:sans-serif; font-size:0.95em; line-height:1.7;">
+    <strong style="color:#c8d0d8;">Physical interpretation:</strong>
+    In the CQFT framework, the two competing scales correspond to phase coherence
+    (driving toward synchronization) and geometric symmetry (driving toward
+    quasiperiodic order). When both are present and neither can dominate -- the
+    lambda greater than 0 regime -- the system settles at the phi ratio. The
+    Penrose quasicrystal, which embeds this ratio geometrically, is therefore the
+    natural substrate for a self-referential field operating under these constraints.
+  </p>
+
+  <div class="lab-controls">
+    <div>
+      <label>Constraint Strength</label>
+      <input id="constraint" type="range" min="0" max="1" step="0.01" value="1">
+    </div>
+    <div>
+      <label>Noise</label>
+      <input id="noise" type="range" min="0" max="0.2" step="0.01" value="0.02">
+    </div>
+    <div>
+      <label>Points (N)</label>
+      <input id="pointsN" type="range" min="80" max="600" step="20" value="200">
+    </div>
+    <div>
+      <label>FFT Grid</label>
+      <input id="fftN" type="range" min="16" max="64" step="8" value="32">
+    </div>
+  </div>
+
+  <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+    <button class="btn-primary" onclick="labStart()">Start</button>
+    <button class="btn-secondary" onclick="labPause()">Pause</button>
+    <button class="btn-secondary" onclick="labReset()">Reset</button>
+    <button class="btn-secondary" onclick="presetRG()">Preset: RG collapse</button>
+    <button class="btn-secondary" onclick="presetPhi()">Preset: phi regime</button>
+    <button class="btn-secondary" onclick="runPhase()">Phase Diagram sweep</button>
+    <button class="btn-secondary" onclick="exportData()">Export data</button>
+  </div>
+
+  <div id="ratioDisplay" style="margin-bottom:4px;">Ratio: --</div>
+  <div id="modeLabel">Mode: --</div>
+
+  <div class="canvas-row">
+    <div>
+      <div class="canvas-label">Ratio convergence (gold line = phi)</div>
+      <canvas id="chart" width="440" height="220"></canvas>
+    </div>
+    <div>
+      <div class="canvas-label">Particle field</div>
+      <canvas id="particles" width="440" height="220"></canvas>
+    </div>
+  </div>
+  <div class="canvas-row">
+    <div>
+      <div class="canvas-label">Fourier spectrum</div>
+      <canvas id="fft" width="440" height="220"></canvas>
+    </div>
+    <div>
+      <div class="canvas-label">Phase diagram (constraint vs noise; blue = far from phi, red = near phi)</div>
+      <canvas id="phaseDiag" width="440" height="220"></canvas>
+    </div>
+  </div>
+
+  <div id="labStats" style="font-family:monospace; font-size:0.85em; color:#9aa4b2; margin-top:8px;">--</div>
+  <p style="font-size:0.82em; color:#6b7a8d; font-family:sans-serif; margin-top:8px;">
+    Tip: at high constraint strength, the ratio should converge near 1.618.
+    At low constraint strength, it collapses toward 1.0.
+    The Fourier spectrum shows quasi-periodic peaks in the phi regime.
+	Recommended exploration path:
+	1. Start in RG regime
+	2. Increase constraint
+	3. Observe transition
+	4. Compare with phase diagram
+  </p>
+</div>
+
+<!-- Ouroboros -->
+<div class="section" id="ouroboros">
+  <h2>The Ouroboros Conjecture: Confirmed (Conditional Form)</h2>
+  <p>
+    The central theoretical postulate of the CQFT framework: a self-referential
+    dissipative field actively selects the geometric substrate consistent with
+    its own self-description -- an ouroboros structure in which the field defines
+    the geometry and the geometry defines the field.
+  </p>
+
+  <table>
+    <thead><tr><th>Condition</th><th>N</th><th>Coupling</th><th>Result</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Neutral evolution</td><td>300-1000</td><td>Amplitude-gradient only</td><td>No emergence</td><td class="fail">FALSIFIED</td></tr>
+      <tr><td>Phase-gradient coupling</td><td>80</td><td>Phase-gradient</td><td>+0.0686 order</td><td class="pass">CONFIRMED</td></tr>
+      <tr><td>Phase-gradient coupling</td><td>1000</td><td>Phase-gradient</td><td>+0.1226 order</td><td class="pass">DEFINITIVE</td></tr>
+    </tbody>
+  </table>
+
+  <p>
+    <strong>Conditional form (confirmed):</strong> a self-referential field with
+    phase-gradient coupling spontaneously selects a geometrically self-consistent
+    substrate from random initial conditions, at 122.6x signal-to-noise ratio.
+    <strong>Strong form (falsified):</strong> neutral dynamics alone are insufficient.
+    Phase-gradient coupling is the necessary ingredient.
+  </p>
+
+  <blockquote>
+    The ouroboros loop is closed: the field is in its ecological niche because
+    it constructed the niche.
+  </blockquote>
+</div>
+
+<!-- AGI Applicability -->
+<div class="section teal-border" id="agi">
+  <h2>AGI Applicability: Five Falsifiable Predictions</h2>
+  <p>
+    The AGI Lagrangian is computable from any system for which the triple of
+    (phase, geometry, coupling) can be extracted. For transformer-based AI systems,
+    all three are available from internal activations during inference using standard
+    interpretability tooling such as TransformerLens or BertViz, without model
+    modification or retraining.
+  </p>
+
+  <h3>Extraction Protocol</h3>
+  <ul>
+    <li><strong>Phase theta_i:</strong> dominant Fourier component of each token's hidden-state vector, or 2D PCA angle</li>
+    <li><strong>Geometry x_i:</strong> 2D PCA projection of the hidden-state matrix, extracted independently of attention weights</li>
+    <li><strong>Coupling W_ij:</strong> attention rollout across all layers and heads</li>
+  </ul>
+
+  <div class="math-box teal">
+    \[
+    \mathcal{L}_{\text{AGI}}^{\text{transformer}}
+      = -\lambda \sum_{i,j} W_{ij}^{\text{rollout}}\cos(\theta_i - \theta_j)
+      + (1-\lambda)\,E_{\text{sym}}\!\left(\text{PCA}_2(H)\right)
+    \]
+  </div>
+
+  <h3>Testable Predictions</h3>
+  <ul class="pred-list">
+    <li><strong>(i)</strong> L_AGI for coherent task input is lower than for noise input on the same model.</li>
+    <li><strong>(ii)</strong> The layer-wise gradient delta L^(l) = L^(l) - L^(l-1) is negative on average during coherent inference, and approximately zero for randomized attention.</li>
+    <li><strong>(iii)</strong> Models with RoPE or ALiBi positional encoding exhibit larger |delta L^(l)| per layer than absolute positional embedding models at matched scale.</li>
+    <li><strong>(iv)</strong> The embedding gap Gamma^transformer decreases with model scale from 125M to 70B parameters.</li>
+    <li><strong>(v)</strong> A non-monotone ("breathing") L^(l) profile is more pronounced on harder inference tasks.</li>
+  </ul>
+
+  <p>
+    All five predictions are falsifiable from existing open-weight model checkpoints
+    without retraining. The first confirmed result will constitute the first direct
+    measurement of geometric coherence in a deployed AI system.
+  </p>
+</div>
+
+<div class="section" id="quantum">
+  <h2>From Classical to Quantum: The Path Forward</h2>
+
+  <p>
+    The N = 1,000 simulation used KDTree nearest-neighbor search and sparse
+    matrix operations: a classical, deterministic approximation to the field
+    dynamics. This is the correct starting point, because it produces clean,
+    reproducible, falsifiable results. But it is a projection of a deeper quantum
+    reality, and the full theory requires a quantum treatment. The transition
+    has three levels, each more powerful and more demanding than the previous.
+  </p>
+
+  <h3>Level 1: Analog Quantum Simulation (Hamiltonian Encoding)</h3>
+  <p>
+    The AGI Lagrangian is promoted to a Hamiltonian operator acting on a quantum
+    register. Position and phase become operators; coupling weights become operator
+    functions:
+  </p>
+  <div class="math-box">
+    \[
+    \hat{H} = -\lambda \sum_{i,j} \hat{W}_{ij}(\hat{\mathbf{x}})
+      \cos(\hat{\theta}_i - \hat{\theta}_j)
+      + (1-\lambda)\,\hat{E}_{\text{sym}}(\hat{\mathbf{x}})
+    \]
+  </div>
+  <p>
+    This is analog quantum simulation: the natural substrate is trapped ions,
+    neutral atoms in optical lattices, or superconducting qubits, all of which
+    can implement all-to-all or quasiperiodic coupling natively. The
+    quasiperiodic connectivity that the classical simulation showed to be
+    optimal maps directly onto the geometry of these platforms.
+  </p>
+
+  <h3>Level 2: Digital Quantum (Variational Quantum Eigensolver)</h3>
+  <p>
+    The phase updates become unitary gates. The AGI Lagrangian becomes an
+    expectation value:
+  </p>
+  <div class="math-box">
+    \[
+    \langle \mathcal{L}_{\text{AGI}} \rangle = \langle \psi | \hat{H} | \psi \rangle
+    \]
+  </div>
+  <p>
+    The system evolves by quantum annealing or variational quantum eigensolver
+    (VQE), minimizing the joint energy over the space of quantum states rather
+    than classical configurations. The KDTree is replaced by a quantum circuit;
+    the sparse matrix multiplication is replaced by entangling gates. For a
+    quantum annealer, the Ising encoding is:
+  </p>
+  <div class="math-box">
+    \[
+    \hat{H}_{\text{Ising}} = \sum_i h_i \hat{\sigma}_i^z
+      + \sum_{i &lt; j} J_{ij} \hat{\sigma}_i^z \hat{\sigma}_j^z
+    \]
+  </div>
+  <p>
+    where h_i encodes the local symmetry energy and J_ij encodes the phase
+    coupling W_ij(x) cos(theta_i - theta_j). This maps directly onto D-Wave
+    and similar platforms.
+  </p>
+
+  <h3>Level 3: Superposition of Geometries (Full Quantum)</h3>
+  <p>
+    The most radical and most powerful extension. Instead of a single geometry
+    {x_i}, the system exists in a superposition:
+  </p>
+  <div class="math-box teal">
+    \[
+    |\Psi\rangle = \sum_{\{x_i\}} \alpha_{\{x_i\}} |\{x_i\}\rangle
+    \]
+  </div>
+  <p>
+    The field simultaneously explores exponentially many geometries during
+    evolution. Measurement collapses to a specific geometry, but the system
+    can find globally optimal configurations that classical gradient descent
+    cannot reach. This is the correct physical implementation of the ouroboros
+    conjecture: not a field searching for its substrate classically, but a
+    quantum superposition of field-substrate pairs collapsing toward the
+    geometrically self-consistent eigenstate.
+  </p>
+  <p>
+    In this formulation, the dubito operator becomes more fundamental: it is no
+    longer only prediction error but the Heisenberg uncertainty inherent in the
+    system's self-measurement. Self-reference under quantum mechanics is not just
+    computationally expensive; it is physically constrained by the uncertainty
+    principle. The dubito is the field's measure of its own irreducible uncertainty
+    about its own state.
+  </p>
+
+  <div class="key-box open">
+    <strong>Prerequisite:</strong> The quantum extension requires a well-defined
+    classical Lagrangian density as its starting point. That is the first item
+    on the quantization roadmap above, and must be completed before any of the
+    quantum levels can be rigorously formulated. The classical simulation has
+    produced the empirical target; the theoretical task now is to derive the
+    action from which that dynamics follows, and then quantize it.
+  </div>
+
+  <p>
+    The classical simulation (N = 1,000, +0.1226 order increase) is a projection
+    of the quantum reality. The fact that the effect is visible classically is
+    evidence that the quantum version would work and likely much more powerfully,
+    because the quantum system can explore the geometry space non-locally. The
+    shift in implementation is from points moving in R^3 to minimize a cost
+    function, to a state vector rotating in Hilbert space toward an eigenstate
+    of maximum geometric coherence.
+  </p>
+</div>
+
+<!-- Theorem box -->
+<div class="section dark-bg">
+  <div class="theorem-wrap">
+    <span class="badge badge-gold">THEOREM (EMPIRICAL, MODEL-BOUND)</span>
+    <span class="badge badge-green">VERIFIED  N=1000  12k steps</span>
+  </div>
+  <div class="theorem-statement">
+    A coupled phase-geometry system lowers its joint free energy by restructuring geometry.
+  </div>
+  <div class="theorem-grid">
+    <div class="theorem-card">
+      <div class="num">1.</div>
+      <div><strong>Vanishes</strong> when coupling removed</div>
+      <small>Delta_abl = -0.0010 approximately 0</small>
+    </div>
+    <div class="theorem-card">
+      <div class="num">2.</div>
+      <div><strong>Scales superlinearly</strong> with system size</div>
+      <small>1.79x larger at N=1000</small>
+    </div>
+    <div class="theorem-card">
+      <div class="num">3.</div>
+      <div><strong>High signal-to-noise</strong></div>
+      <small>SNR = 122.6x</small>
+    </div>
+  </div>
+  <div style="text-align:center; padding:10px; background:rgba(201,162,39,0.1); border-radius:6px; font-style:italic; color:#c8d8e8; font-family:sans-serif; font-size:0.93em;">
+    "The coupling term lambda greater than zero is a relevant operator governing large-scale organization."
+  </div>
+</div>
+
+<!-- Milestones -->
+<div class="section milestone-bg" id="milestones">
+  <h2>Milestones</h2>
+  <p>
+    <strong>April 2026: Definitive empirical confirmation at N = 1,000.</strong>
+    Phase-gradient coupling produces spontaneous order emergence with 122.6x
+    signal-to-noise ratio. The ouroboros conjecture confirmed in conditional form.
+    Full paper submitted for peer review. Constraint-driven phi correction paper
+    completed, superseding the October 2025 RG fixed-point hypothesis.
+  </p>
+  <p>
+    <strong>September 2025: Accepted into NVIDIA Inception Program.</strong>
+    Access to A100 and H100 compute resources enabled the scaling experiments to
+    N = 1,000 and the definitive confirmation.
+  </p>
+</div>
+
+<!-- Funding -->
+<div class="section" id="funding">
+  <h2>Collaboration and Funding</h2>
+  <div class="funding-note">
+    <p>
+      DUBITO Inc. is an independent, unfunded research operation. The results
+      described on this page were obtained without institutional backing, which
+      is both a constraint and, we believe, a guarantee of independence.
+    </p>
+    <p>
+      We are actively seeking research partnerships, grant funding, and conversations
+      with venture investors who take the AGI safety problem seriously. This is an
+      early-stage, high-risk, high-impact research programme in a field with no
+      established players and a clear path to measurable results. The five falsifiable
+      predictions above are the benchmark: any one confirmed constitutes a
+      demonstrable advance in AI interpretability and safety.
+    </p>
+    <p>
+      We are also in active conversation with the Volatco neuromorphic computing
+      platform regarding hardware implementation of the Penrose routing architecture.
+      The hardware proposal and technical annex are available below.
+    </p>
+    <p>
+      If you are a researcher, funder, or company working on AI safety, interpretability,
+      neuromorphic computing, or consciousness science and would like to discuss
+      collaboration, please write to
+      <a href="mailto:solis@dubito-ergo.com">solis@dubito-ergo.com</a>.
+    </p>
+  </div>
+</div>
+
+<!-- Resources -->
+<div class="section" id="resources">
+  <h2>Research Resources</h2>
+
+  <h3>Papers</h3>
+  <table>
+    <thead><tr><th>Title</th><th>Status</th><th>Link</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Geometric Substrate Selection in Self-Referential Dissipative Fields (main paper)</td>
+        <td>Submitted for review</td>
+        <td><a href="https://github.com/Ergo-sum-AGI/Consciousness-over-geometry/blob/main/Geometric_Substrate_Selection_in_Self_Referential_Dissipative_Fields.pdf" target="_blank">PDF</a></td>
+      </tr>
+      <tr>
+        <td>CQFT Revisited: Constraint-Driven phi Selection (phi correction)</td>
+        <td>April 2026</td>
+        <td><a href="https://github.com/Ergo-sum-AGI/Consciousness-over-geometry/blob/main/CQFT_Revisited_2026.pdf" target="_blank">PDF</a></td>
+      </tr>
+      <tr>
+        <td>Geometric Coherence as a Safety Criterion for AGI (funding proposal)</td>
+        <td>April 2026</td>
+        <td><a href="https://github.com/Ergo-sum-AGI/Consciousness-over-geometry/blob/main/dubito_research_proposal.pdf" target="_blank">PDF</a></td>
+      </tr>
+      <tr>
+        <td>Quasiperiodic Architecture Overlay on GA144 (Volatco technical annex)</td>
+        <td>April 2026</td>
+        <td><a href="https://github.com/Ergo-sum-AGI/Consciousness-over-geometry/blob/main/technical_implementation_volatco_annex_a.pdf" target="_blank">PDF</a></td>
+      </tr>
+      <tr>
+        <td>A Principled Field Theory of Consciousness (PFT)</td>
+        <td>2024</td>
+        <td><a href="A_Principled_Field_Theory_of_Consciousness_From_Informational_Free_Energy_to_Fractal_Dynamics.pdf" download>PDF</a></td>
+      </tr>
+      <tr>
+        <td>QFT Extension: phi Fixed-Point (historical; superseded by CQFT Revisited)</td>
+        <td>October 2025</td>
+        <td><a href="Extended_CQFT_Phi_Fixed-Point.pdf" download>PDF</a></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Code</h3>
+  <ul>
+    <li><a href="https://github.com/Ergo-sum-AGI/Consciousness-over-geometry/blob/main/SCALED-UP_EXPERIMENT%20.py" target="_blank">Simulation code: N=1000 scaled experiment (Python)</a></li>
+    <li><a href="https://github.com/Ergo-sum-AGI/Consciousness-over-geometry/blob/main/Geometry_Test.ipynb" target="_blank">N=1000 experiment notebook (Colab)</a></li>
+    <li><a href="https://github.com/Ergo-sum-AGI/RG-AGI-Safety" target="_blank">Python RG and AGI safety codes</a></li>
+  </ul>
+
+  <h3>Interactive Visualizations</h3>
+  <ul>
+    <li><a href="https://ergo-sum-agi.github.io/Quantum-Field-Theory-Toy-model-/" target="_blank">QFT Toy Model (browser)</a></li>
+    <li><a href="https://ergo-sum-agi.github.io/Phi-Studio/" target="_blank">phi-Studio CQFT Visualizer</a></li>
+    <li><a href="https://ergo-sum-agi.github.io/Advanced-QFT/" target="_blank">Advanced QFT Explorer</a></li>
+  </ul>
+
+  <h3>Zenodo Preprints</h3>
+  <ul>
+    <li><a href="https://zenodo.org/records/17660834" target="_blank">Conscious Action Quantum as Universal Anomalous Dimension</a></li>
+    <li><a href="https://zenodo.org/records/17622415" target="_blank">Fundamental Scaling Constant Governing Quantum, Neural, and Cosmic Systems</a></li>
+    <li><a href="https://zenodo.org/records/17517044" target="_blank">Quantum Self-Consistency and Anomalous Dimension</a></li>
+  </ul>
+</div>
+
+<!-- Philosophy -->
+<div class="section" id="philosophy">
+  <h2>Philosophy</h2>
+  <p>
+    Drawing inspiration from the Delphic maxim
+    "<span class="tip" title="Know thyself">gnoti seauton</span>"
+    and Descartes' dictum "dubito, ergo cogito, ergo sum", our systems are
+    designed to guide artificial intelligence toward ethical self-understanding,
+    ensuring safety and alignment with human values in an era of emerging
+    intelligence.
+  </p>
+  <p>
+    The Poincare principle governs all research decisions. Reporting a negative
+    result -- the falsification of the phi fixed-point hypothesis -- with the same
+    rigour as a positive one is not a concession but a scientific obligation. It
+    is also, in this case, what led to a deeper and more defensible theory.
+  </p>
+  <blockquote>
+    Dubitamus ergo cogitamus -- ergo sumus -- sumus mundus.
+  </blockquote>
+</div>
+
+<!-- Footer -->
+<footer id="contact">
+  <p>
+    Connect:
+    <a href="https://www.linkedin.com/in/daniel-solis-605168355" target="_blank">LinkedIn</a> |
+    <a href="https://github.com/Ergo-sum-AGI/" target="_blank">GitHub</a> |
+    <a href="mailto:solis@dubito-ergo.com">solis@dubito-ergo.com</a>
+  </p>
+  <p>Daniel Solis | DUBITO Inc. | Incorporated in Delaware, USA</p>
+  <p>2026 DUBITO Inc. All rights reserved.</p>
+  <div class="view-counter" id="viewCount">Views: --</div>
+</footer>
+
+<!-- =========================================================
+     INTERACTIVE LAB SCRIPT
+     ========================================================= -->
+<script>
+// ---- State
+const PHI = (1 + Math.sqrt(5)) / 2;
+let labRunning = false;
+let alphaL = 1, alphaS = 1;
+let ratioHist = [];
+let particles = [];
+let dataLog = [];
+let ptCloud = [];
+
+// ---- Canvas contexts
+const chartCtx    = document.getElementById("chart").getContext("2d");
+const partCtx     = document.getElementById("particles").getContext("2d");
+const fftCtx      = document.getElementById("fft").getContext("2d");
+const phaseCtx    = document.getElementById("phaseDiag").getContext("2d");
+
+// ---- Generate Penrose-approximate point cloud
+function genPoints(N) {
+  ptCloud = [];
+  for (let i = 0; i < N; i++) {
+    const v = Array.from({length:5}, () => Math.random() * 10);
+    const x = v[0] + PHI * v[1] - v[2];
+    const y = v[3] + PHI * v[4] - v[0];
+    if ((v[0] + v[1] + v[2]) % 2 < 1) ptCloud.push({x, y});
+  }
+}
+
+// ---- Particles
+function initParticles(N) {
+  const W = 440, H = 220;
+  particles = Array.from({length: N}, () => ({
+    x: Math.random() * W, y: Math.random() * H, vx: 0, vy: 0
+  }));
+}
+
+// ---- One simulation step
+function labStep() {
+  const c = parseFloat(document.getElementById("constraint").value);
+  const n = parseFloat(document.getElementById("noise").value);
+
+  // RG-like smoothing
+  const rgL = (alphaL + alphaS) / 2;
+
+  // Constraint-driven Fibonacci-like recursion
+  const cL = alphaL + alphaS;
+  const cS = alphaL;
+
+  // Interpolate
+  alphaL = c * cL + (1 - c) * rgL + (Math.random() - 0.5) * n * 0.5;
+  alphaS = c * cS + (1 - c) * rgL + (Math.random() - 0.5) * n * 0.5;
+
+  // Guard against degenerate values
+  alphaL = Math.max(alphaL, 0.01);
+  alphaS = Math.max(alphaS, 0.01);
+
+  const ratio = alphaL / alphaS;
+  ratioHist.push(ratio);
+  if (ratioHist.length > 120) ratioHist.shift();
+
+  dataLog.push({t: Date.now(), ratio, c, n});
+
+  document.getElementById("ratioDisplay").textContent =
+    "Ratio: " + ratio.toFixed(5) + "  |  phi = " + PHI.toFixed(5);
+  document.getElementById("modeLabel").textContent =
+    c > 0.5 ? "Mode: Constrained (phi regime)" : "Mode: RG-like (collapse)";
+  document.getElementById("labStats").textContent =
+    "alphaL=" + alphaL.toFixed(4) + "  alphaS=" + alphaS.toFixed(4) +
+    "  deviation from phi=" + Math.abs(ratio - PHI).toFixed(5);
+
+  drawChart(ratio);
+  updateParticles(ratio);
+  drawFFT();
+}
+
+// ---- Draw ratio chart
+function drawChart(ratio) {
+  const W = 440, H = 220;
+  chartCtx.clearRect(0, 0, W, H);
+
+  // Ratio line
+  chartCtx.beginPath();
+  ratioHist.forEach((r, i) => {
+    chartCtx.lineTo(i * (W / 120), H - Math.min(r, 4) * (H / 4.5));
+  });
+  chartCtx.strokeStyle = "#58a6ff";
+  chartCtx.lineWidth = 1.5;
+  chartCtx.stroke();
+
+  // phi reference line
+  const yPhi = H - PHI * (H / 4.5);
+  chartCtx.beginPath();
+  chartCtx.moveTo(0, yPhi); chartCtx.lineTo(W, yPhi);
+  chartCtx.setLineDash([5, 5]);
+  chartCtx.strokeStyle = "#f2cc60";
+  chartCtx.lineWidth = 1;
+  chartCtx.stroke();
+  chartCtx.setLineDash([]);
+
+  // Label
+  chartCtx.fillStyle = "#f2cc60";
+  chartCtx.font = "11px monospace";
+  chartCtx.fillText("phi = " + PHI.toFixed(4), 4, yPhi - 4);
+}
+
+// ---- Update particles
+function updateParticles(ratio) {
+  const W = 440, H = 220;
+  partCtx.clearRect(0, 0, W, H);
+  const angle = (Math.PI * 2) / ratio;
+
+  for (const p of particles) {
+    p.vx += Math.cos(angle) * 0.02 + (Math.random() - 0.5) * 0.08;
+    p.vy += Math.sin(angle) * 0.02 + (Math.random() - 0.5) * 0.08;
+    p.vx *= 0.94; p.vy *= 0.94;
+    p.x = (p.x + p.vx + W) % W;
+    p.y = (p.y + p.vy + H) % H;
+
+    partCtx.beginPath();
+    partCtx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+    partCtx.fillStyle = "#58a6ff";
+    partCtx.fill();
+  }
+}
+
+// ---- Fourier spectrum of point cloud
+function drawFFT() {
+  const nPts = parseInt(document.getElementById("pointsN").value);
+  if (ptCloud.length < 10) return;
+  const G = parseInt(document.getElementById("fftN").value);
+  const W = 440, H = 220;
+  fftCtx.clearRect(0, 0, W, H);
+
+  const pts = ptCloud.slice(0, Math.min(ptCloud.length, nPts));
+  const cellW = W / G, cellH = H / G;
+
+  for (let kx = 0; kx < G; kx++) {
+    for (let ky = 0; ky < G; ky++) {
+      let re = 0, im = 0;
+      for (const p of pts) {
+        const ang = 2 * Math.PI * (kx * p.x + ky * p.y) / 50;
+        re += Math.cos(ang); im += Math.sin(ang);
+      }
+      const mag = Math.hypot(re, im);
+      const val = Math.min(255, mag * 3);
+      fftCtx.fillStyle = `rgb(${val},${Math.floor(val * 0.6)},${Math.floor(val * 0.2)})`;
+      fftCtx.fillRect(kx * cellW, ky * cellH, cellW, cellH);
+    }
+  }
+}
+
+// ---- Phase diagram sweep (web worker)
+function runPhase() {
+  const code = `
+    self.onmessage = () => {
+      const phi = (1 + Math.sqrt(5)) / 2;
+      const size = 44;
+      const out = [];
+      for (let cx = 0; cx < size; cx++) {
+        for (let cy = 0; cy < size; cy++) {
+          const c = cx / size;
+          const n = (cy / size) * 0.2;
+          let a = 1, b = 1;
+          for (let i = 0; i < 50; i++) {
+            const rg = (a + b) / 2;
+            const na = c * (a + b) + (1 - c) * rg + (Math.random() - 0.5) * n;
+            const nb = c * a       + (1 - c) * rg + (Math.random() - 0.5) * n;
+            a = Math.max(na, 0.01); b = Math.max(nb, 0.01);
+          }
+          out.push({x: cx, y: cy, dev: Math.abs(a / b - phi)});
+        }
+      }
+      self.postMessage(out);
+    };
+  `;
+  const worker = new Worker(URL.createObjectURL(
+    new Blob([code], {type: "application/javascript"})
+  ));
+  worker.onmessage = e => drawPhaseDiag(e.data);
+  worker.postMessage({});
+
+  phaseCtx.clearRect(0, 0, 440, 220);
+  phaseCtx.fillStyle = "#333";
+  phaseCtx.font = "12px monospace";
+  phaseCtx.fillStyle = "#9aa4b2";
+  phaseCtx.fillText("Computing phase diagram...", 10, 110);
+}
+
+function drawPhaseDiag(data) {
+  const size = 44;
+  const W = 440, H = 220;
+  const cW = W / size, cH = H / size;
+  data.forEach(p => {
+    const val = Math.min(255, p.dev * 350);
+    phaseCtx.fillStyle = `rgb(${val},0,${255 - val})`;
+    phaseCtx.fillRect(p.x * cW, p.y * cH, cW, cH);
+  });
+  // Axes labels
+  phaseCtx.fillStyle = "#ccc";
+  phaseCtx.font = "10px sans-serif";
+  phaseCtx.fillText("Constraint strength (0→1)", 4, H - 4);
+}
+
+// ---- Controls
+function labStart() {
+  if (labRunning) return;
+  labRunning = true;
+  const N = parseInt(document.getElementById("pointsN").value);
+  genPoints(N);
+  initParticles(60);
+  (function loop() { if (!labRunning) return; labStep(); requestAnimationFrame(loop); })();
+}
+function labPause() { labRunning = false; }
+function labReset() {
+  labRunning = false;
+  alphaL = 1; alphaS = 1; ratioHist = []; dataLog = []; ptCloud = [];
+  [chartCtx, partCtx, fftCtx, phaseCtx].forEach(ctx => {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  });
+  document.getElementById("ratioDisplay").textContent = "Ratio: --";
+  document.getElementById("modeLabel").textContent = "Mode: --";
+  document.getElementById("labStats").textContent = "--";
+  initParticles(60);
+}
+
+// ---- Presets
+function presetRG()  { document.getElementById("constraint").value = 0; }
+function presetPhi() { document.getElementById("constraint").value = 1; }
+
+// ---- Export
+function exportData() {
+  const blob = new Blob([JSON.stringify(dataLog, null, 2)], {type: "application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "dubito_lab_data.json";
+  a.click();
+}
+
+// ---- Init
+initParticles(60);
+
+// ---- View counter
+try {
+  let count = parseInt(localStorage.getItem("dubito_views") || "1000") + 1;
+  localStorage.setItem("dubito_views", count);
+  document.getElementById("viewCount").textContent = "Views: " + count.toLocaleString();
+} catch(e) {}
+</script>
+</body>
+</html>

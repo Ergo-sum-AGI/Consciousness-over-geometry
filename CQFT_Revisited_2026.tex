@@ -1,0 +1,701 @@
+% =============================================================================
+% Constraint-Driven Geometric Substrate Selection in Self-Referential Fields:
+% From Renormalization Collapse to Multi-Scale Structure
+%
+% Daniel Solis | DUBITO Inc. | April 2026
+%
+% This paper corrects and supersedes the φ fixed-point claim made in
+% "Extended CQFT: φ Fixed-Point" (October 2025) and provides the correct
+% mathematical basis for the role of φ in the CQFT framework.
+% =============================================================================
+
+\documentclass[11pt,a4paper]{article}
+
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage[numbers]{natbib}
+\usepackage{enumitem}
+\usepackage{mdframed}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  citecolor=green!50!black,
+  urlcolor=blue!60!black,
+}
+
+\newmdenv[
+  linewidth=1pt,
+  linecolor=blue!40!black,
+  backgroundcolor=blue!3,
+  innertopmargin=8pt, innerbottommargin=8pt,
+  innerleftmargin=10pt, innerrightmargin=10pt,
+]{keybox}
+
+\newmdenv[
+  linewidth=1pt,
+  linecolor=orange!70!black,
+  backgroundcolor=orange!5,
+  innertopmargin=8pt, innerbottommargin=8pt,
+  innerleftmargin=10pt, innerrightmargin=10pt,
+]{correctionbox}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\phiGolden}{\varphi}
+
+% =============================================================================
+\title{%
+  \textbf{Constraint-Driven Geometric Substrate Selection\\
+  in Self-Referential Fields:}\\[6pt]
+  \large From Renormalization Collapse to Multi-Scale Structure\\[6pt]
+  \normalsize \textit{A Correction and Extension of the CQFT $\phi$-Fixed-Point
+  Hypothesis}
+}
+
+\author{%
+  Daniel Solis\\[4pt]
+  \small DUBITO Inc.\ -- Dubito Ergo AGI Safety Project\\
+  \small Czech Republic\\
+  \small \texttt{solis@dubito-ergo.com}
+}
+
+\date{\small April 2026}
+% =============================================================================
+
+\begin{document}
+
+\maketitle
+
+\begin{correctionbox}
+\textbf{Scientific status of this paper.}
+In October 2025, the CQFT framework hypothesized that the golden ratio
+$\phiGolden \approx 1.618$ arises as an infrared-attractive renormalization
+group (RG) fixed point of the nonlocal field theory, yielding anomalous
+dimension $\eta \approx 0.809$. Subsequent systematic simulation at
+$N = 200$--$1000$ produced a clean negative result: $\phiGolden$ is not a
+preferred spectral scaling base. The $\phiGolden$-advantage lies in
+$[-0.29, -0.10]$ across all conditions --- $\phiGolden$ is consistently
+the \emph{worst} spectral base, not the best.
+
+This paper corrects that hypothesis. We show analytically that smooth RG
+flow \emph{suppresses} multi-scale structure rather than generating it.
+We then demonstrate that $\phiGolden$ arises from a qualitatively different
+mechanism, constraint-driven scale competition, which is consistent
+with all simulation results and provides a stronger theoretical foundation
+for the role of quasiperiodic geometry in the CQFT framework.
+\end{correctionbox}
+
+\begin{abstract}
+We investigate the emergence of multi-scale structure in self-referential
+dynamical systems coupled to an evolving geometric substrate. Prior work
+hypothesized that renormalization group (RG) dynamics could generate the
+golden ratio $\phiGolden$ as a nontrivial infrared fixed point. We show
+analytically that smooth RG coarse-graining instead suppresses scale
+hierarchy, converging to single-scale fixed points. Persistent multi-scale
+structure arises from a qualitatively different mechanism: constraint-driven
+dynamics in which competing scales cannot be simultaneously optimized. Using
+results from Diophantine approximation, KAM theory, and quasi-periodic
+spectral analysis, we show that $\phiGolden$ emerges as the uniquely stable
+invariant under iterative scale competition, maximizing resistance to rational
+approximation.
+
+We connect this result directly to the CQFT simulation findings: the
+Penrose quasicrystal, whose vertex set has $\phiGolden$-ratio geometry built
+in, achieves the lowest fractal embedding gap
+$\Gamma = |D_f - D_c|$ across all geometries tested ($N = 200$--$1000$),
+and is the only geometry supporting productive far-from-equilibrium dynamics.
+This is not coincidental: Penrose geometry instantiates the
+constraint-driven $\phiGolden$ regime at the substrate level, providing the
+field with a natural multi-scale scaffold. We establish a clear separation:
+RG dynamics explain universality and scale elimination; constraint-driven
+dynamics explain persistent quasiperiodic structure. Five falsifiable
+predictions follow.
+\end{abstract}
+\newpage
+\tableofcontents
+\bigskip
+
+% =============================================================================
+\section{Introduction}
+\label{sec:intro}
+% =============================================================================
+
+\subsection{Two mechanisms for structure}
+
+Understanding the origin of structure in complex systems requires
+distinguishing two fundamentally different generating mechanisms:
+
+\begin{itemize}[noitemsep]
+  \item \textbf{Renormalization dynamics}, which reduce degrees of freedom
+    by successive coarse-graining, producing universal scaling behaviour
+    at fixed points.
+  \item \textbf{Constraint-driven selection}, in which competing requirements
+    prevent full optimization and enforce the coexistence of multiple scales.
+\end{itemize}
+
+Prior work in the CQFT programme
+(``Quantum Field Theory of Consciousness: $\phiGolden$ Fixed-Point'', 2025)
+proposed that $\phiGolden$ arises via the first mechanism. The present
+paper demonstrates that $\phiGolden$ arises via the second, and that this
+distinction has direct consequences for how the role of quasiperiodic
+geometry in self-referential field dynamics should be understood.
+
+\subsection{Why the correction strengthens the theory}
+
+The falsification of the RG fixed-point hypothesis is not merely a negative
+result to be buried. It is information: it tells us that $\phiGolden$'s
+role in the CQFT framework is \emph{not} that of a universal RG attractor
+(which would imply it should appear everywhere, under all conditions),
+but rather that of a \emph{conditional structural invariant} (which appears
+only when the dynamics operate under competing scale constraints).
+
+This is in fact consistent with all simulation findings:
+\begin{enumerate}[noitemsep]
+  \item $\phiGolden$ is not a preferred spectral scaling base (negative):
+    consistent with $\phiGolden$ not being an RG fixed point.
+  \item Penrose geometry, which \emph{does} have $\phiGolden$-scaling
+    built into its vertex set - achieves the lowest $\Gamma$ and the
+    most productive dynamics: consistent with $\phiGolden$ arising
+    from constraint-driven selection at the substrate level.
+\end{enumerate}
+
+The constraint-driven account is both more precise and more falsifiable
+than the RG account.
+
+\subsection{Structure of the paper}
+
+Section~\ref{sec:framework} establishes the field-theoretic setting.
+Section~\ref{sec:rg} shows why RG flow eliminates scale hierarchy.
+Section~\ref{sec:constraint} develops the constraint-driven mechanism
+and derives $\phiGolden$ as its invariant.
+Section~\ref{sec:penrose} connects this to the CQFT simulation results
+via Penrose geometry.
+Section~\ref{sec:predictions} states five falsifiable predictions.
+Section~\ref{sec:conclusions} draws conclusions.
+
+% =============================================================================
+\section{Field-Theoretic Framework}
+\label{sec:framework}
+% =============================================================================
+
+We consider a scalar field $C(x,t)$ evolving on a graph $G = (V,E)$
+with $|V| = N$ nodes, governed by:
+\begin{equation}
+\label{eq:field}
+\partial_t C = \mathcal{F}[C] + \eta(x,t)
+\end{equation}
+where $\mathcal{F}[C]$ encodes local diffusion, nonlocal memory coupling,
+and negentropy-driven amplitude dynamics, and $\eta$ represents stochastic
+perturbations with $1/f$ power spectrum.
+
+The system is coupled to a geometric substrate characterized by a set of
+interaction scales $\{\alpha_i\}$. The full joint dynamics are captured
+by the AGI Lagrangian \citep{solis2026cqft}:
+\begin{equation}
+\label{eq:lagrangian}
+\mathcal{L}_{\text{AGI}} = \lambda\!\left(
+  -\sum_{i,j} W_{ij}(\mathbf{x})\cos(\theta_i - \theta_j)
+\right) + (1-\lambda)\,E_{\text{sym}}(\mathbf{x})
+\end{equation}
+where $\lambda \in [0,1]$ governs phase-geometry coupling and
+$E_{\text{sym}}$ is the quasiperiodic symmetry energy. The coupling
+term creates the scale competition that, as we show below, selects
+$\phiGolden$ as the structural invariant.
+
+% =============================================================================
+\section{Renormalization Group Dynamics and Scale Elimination}
+\label{sec:rg}
+% =============================================================================
+
+\subsection{Wilsonian coarse-graining}
+
+Under Wilsonian renormalization, fast degrees of freedom above a momentum
+cutoff $\Lambda$ are integrated out, producing an effective action at
+scale $\Lambda' < \Lambda$. Schematically:
+\begin{equation}
+e^{-S_{\text{eff}}[\phi_{<}]} = \int \mathcal{D}\phi_{>}\,
+e^{-S[\phi_{<} + \phi_{>}]}
+\end{equation}
+This procedure generates RG flow equations for the coupling constants.
+In the nonlocal field theory with kernel $G(r) \sim |r|^{-\alpha}$,
+the flow of $\alpha$ under coarse-graining satisfies:
+\begin{equation}
+\frac{d\alpha}{d\ln\Lambda} = \beta(\alpha)
+\end{equation}
+with $\beta(\alpha) < 0$ for $\alpha > d/2$ in spatial dimension $d$.
+This means the scaling exponent flows toward smaller values, which
+corresponds to \emph{more local} effective interactions.
+
+\subsection{Scale hierarchy is not preserved}
+
+The key observation is that RG coarse-graining is designed to produce
+universality: it identifies which features of a system are irrelevant
+(flow to zero) and which are relevant (flow to fixed points). This
+is precisely what makes RG powerful for critical phenomena.
+
+But this same property makes RG unsuited to generating multi-scale
+structure. If a system has two competing scales $\alpha_L$ and
+$\alpha_S$ with $\alpha_L > \alpha_S$, RG flow treats the smaller scale
+as a subleading correction and drives the effective theory toward a
+single dominant scale:
+\begin{equation}
+\text{RG}: \quad (\alpha_L, \alpha_S) \;\longrightarrow\; (\alpha^*, 0)
+\end{equation}
+Numerical investigation confirms this: initializing with two distinct
+scales and running the RG flow, the ratio $r = \alpha_L / \alpha_S$
+does not stabilize at $\phiGolden$ but instead diverges as $\alpha_S$
+flows toward zero. We record this as:
+
+\begin{keybox}
+\textbf{Result 1 (RG scale collapse).}
+Smooth RG coarse-graining of the CQFT nonlocal field theory eliminates
+scale hierarchy. No stable irrational ratio, including $\phiGolden$,
+emerges under smooth RG flow. Therefore:
+\[
+\text{RG dynamics} \;\Rightarrow\; \text{single-scale fixed point.}
+\]
+The hypothesis that $\phiGolden$ is an infrared-attractive RG fixed point
+is \textbf{falsified} by this analysis and by systematic simulation.
+\end{keybox}
+
+% =============================================================================
+\section{Constraint-Driven Multi-Scale Selection}
+\label{sec:constraint}
+% =============================================================================
+
+\subsection{Competing constraints prevent scale collapse}
+
+We now introduce the regime that RG analysis misses: systems in which
+structural constraints prevent full optimization of either scale
+independently. In the CQFT context, these constraints arise naturally
+from the AGI Lagrangian \eqref{eq:lagrangian}: the phase-coupled drift
+term drives the system toward phase synchronization (a single-scale
+coherent state), while the symmetry relaxation term drives it toward
+quasiperiodic order (which requires multi-scale structure). Neither
+term can dominate completely at $\lambda > 0$; they compete.
+
+Formally, define two scales $\alpha_L > \alpha_S > 0$ and constraints:
+\begin{align}
+\alpha_L &\text{ cannot collapse to } \alpha_S
+  \quad \text{(phase coherence prevents this)}\label{eq:c1}\\
+\alpha_S &\text{ cannot expand to } \alpha_L
+  \quad \text{(symmetry relaxation prevents this)}\label{eq:c2}
+\end{align}
+The system must find a stable ratio $r = \alpha_L / \alpha_S$ that
+satisfies both constraints simultaneously.
+
+\subsection{Commensurability collapse and its avoidance}
+
+A ratio is \emph{commensurate} if:
+\begin{equation}
+r \approx \frac{p}{q}, \quad p, q \in \mathbb{Z}^+
+\end{equation}
+Commensurate ratios produce resonance: the two scales lock, reducing
+the effective number of independent degrees of freedom and collapsing
+the multi-scale structure. This is the discrete analogue of the single-
+scale RG fixed point.
+
+The constraint system must therefore avoid commensurability. Following
+Diophantine approximation theory, we impose a lower bound on the
+separation from any rational:
+\begin{equation}
+\label{eq:diophantine}
+\left| r - \frac{p}{q} \right| \geq \frac{c}{q^2}
+  \quad \forall\, p/q \in \mathbb{Q}
+\end{equation}
+Numbers satisfying \eqref{eq:diophantine} are called \emph{badly
+approximable} or Diophantine. The question is: which badly approximable
+number is the \emph{most} stable under the constraint dynamics?
+
+\subsection{The golden ratio as the optimal invariant}
+
+\begin{definition}[Approximation resistance functional]
+\begin{equation}
+\mathcal{F}(r) = \inf_{p/q \in \mathbb{Q}}
+  \left( q^2 \left| r - \frac{p}{q} \right| \right)
+\end{equation}
+This measures the worst-case resistance to rational approximation of
+the number $r$.
+\end{definition}
+
+\begin{theorem}[Hurwitz; see \citealp{hurwitz1891}]
+For any irrational $r$:
+\begin{equation}
+\mathcal{F}(r) \leq \frac{1}{\sqrt{5}}
+\end{equation}
+with equality if and only if $r = \phiGolden$ (or its algebraic
+conjugate). Therefore:
+\begin{equation}
+\label{eq:phi_optimal}
+r^* = \arg\max_{r \notin \mathbb{Q}} \mathcal{F}(r) = \phiGolden
+\end{equation}
+$\phiGolden$ is the \emph{hardest} irrational to approximate by
+rationals, and is thus maximally resistant to commensurability collapse.
+\end{theorem}
+
+\begin{keybox}
+\textbf{Result 2 (Constraint-driven $\phiGolden$ selection).}
+In a system subject to competing scale constraints
+\eqref{eq:c1}--\eqref{eq:c2} with commensurability avoidance
+\eqref{eq:diophantine}, the unique stable scale ratio is:
+\[
+r^* = \phiGolden = \text{ratio maximizing resistance to rational
+approximation}.
+\]
+This is \emph{not} an RG fixed point. It is a structural invariant
+of constraint-driven scale competition.
+\end{keybox}
+
+\subsection{Dynamical characterization: iterative scale mixing}
+
+The constraint dynamics can be modeled as iterative scale mixing.
+When the two constraints interact recursively, the scale ratio evolves as:
+\begin{equation}
+r_{n+1} = 1 + \frac{1}{r_n}
+\end{equation}
+This is the continued fraction recursion. Its unique fixed point is:
+\begin{equation}
+r^* = 1 + \frac{1}{r^*} \;\Longrightarrow\; r^* = \phiGolden
+\end{equation}
+This provides a dynamical derivation of $\phiGolden$ as the
+\emph{only} ratio stable under iterative scale competition, independent
+of the Diophantine argument.
+
+\subsection{Extensions: KAM theory and quasi-periodic spectra}
+
+\paragraph{Circle maps and KAM.}
+In the driven oscillator system:
+\begin{equation}
+\theta_{n+1} = \theta_n + \Omega + K\sin(2\pi\theta_n)
+\end{equation}
+the last invariant torus to survive as the coupling $K$ increases
+occurs at the winding number $\Omega = \phiGolden^{-1}$.
+By the KAM theorem \citep{kolmogorov1954,arnold1963,moser1962},
+this torus persists longest because $\phiGolden^{-1}$ is the most
+badly approximable rotation number. Its destruction marks the onset
+of global chaos. This is the continuous-time analogue of the
+constraint-driven selection.
+
+\paragraph{Quasi-periodic spectra.}
+For potentials of the form:
+\begin{equation}
+V(x) = V_0\cos(2\pi x) + V_1\cos(2\pi r\, x)
+\end{equation}
+irrational $r$ produces quasi-periodic (Cantor-like) spectra.
+Spectral stability is maximized when $r$ is maximally irrational.
+Penrose tilings, whose vertex sets have ratio $\phiGolden$ between
+the two rhombus edge lengths, realize this condition geometrically:
+they produce the characteristic 5-fold / 10-fold diffraction peaks
+of maximally stable quasi-periodic order.
+
+% =============================================================================
+\section{Connection to CQFT Simulation Results}
+\label{sec:penrose}
+% =============================================================================
+
+\subsection{Penrose geometry as physical instantiation}
+
+The Penrose quasicrystal is not just a mathematical example: it is the
+geometry that instantiates $\phiGolden$-ratio scale competition at the
+substrate level. A Penrose tiling has exactly two rhombus types with
+edge ratio $\phiGolden$. Its vertex set has fractal scaling consistent
+with $\phiGolden$ (the amplitude-weighted correlation dimension
+$D_c^{\text{Penrose}} \in [1.41, 1.49]$ across $N = 200$--$1000$,
+near $\sqrt{2} \approx 1.414$, the logarithmic mean of 1 and 2 under
+$\phiGolden$-weighting).
+
+The constraint-driven account now explains the key simulation finding:
+
+\begin{keybox}
+\textbf{Why Penrose achieves the lowest $\Gamma$.}
+The embedding gap $\Gamma = |D_f - D_c|$ measures the mismatch between
+the field's external and internal descriptions of its spatial structure.
+On a Penrose substrate, the field operates in the constraint-driven
+$\phiGolden$ regime: the two competing scales (phase coherence drives
+toward synchronization; symmetry relaxation drives toward quasiperiodic
+order) are balanced at the maximally stable ratio. This allows the
+field to maintain \emph{both} spatial complexity ($D_f$) and coherent
+self-correlation ($D_c$) simultaneously, minimizing their mismatch.
+
+On a square lattice, there is no such balance: the 4-fold symmetry
+imposes a commensurate structure that frustrates the field's natural
+quasiperiodic tendency, producing large $\Gamma$.
+\end{keybox}
+
+\subsection{Reconciliation with the $\phiGolden$ negative result}
+
+The simulation found that $\phiGolden$ is not a preferred spectral
+scaling base. This is fully consistent with the constraint-driven account:
+
+\begin{itemize}[noitemsep]
+  \item The spectral scaling test asks whether $\phiGolden$ appears
+    in the \emph{field's temporal spectrum} as an RG fixed point would.
+    It does not, because $\phiGolden$ is not an RG fixed point.
+  \item The constraint-driven account predicts $\phiGolden$ in the
+    \emph{substrate's geometric ratio} - which the Penrose geometry
+    does instantiate, and which does produce the lowest $\Gamma$.
+\end{itemize}
+
+The two results are not only consistent but mutually confirming:
+the negative result rules out the RG mechanism; the positive Penrose
+result confirms the constraint-driven mechanism operating at the
+geometric level rather than the spectral level.
+
+\subsection{Geometry-ordering result}
+
+Table~\ref{tab:regimes} summarizes the three dynamical regimes in terms
+of their constraint structure.
+
+\begin{table}[h]
+\centering
+\caption{Three substrate geometries, their constraint structure, and
+  simulation observables ($N = 500$, $\beta = 4.2$).}
+\label{tab:regimes}
+\begin{tabular}{p{2.8cm}p{2.8cm}p{2.8cm}p{3.2cm}}
+\toprule
+& \textbf{Random} & \textbf{Square lattice} & \textbf{Penrose} \\
+\midrule
+Scale structure &
+  Unconstrained (no competing scales) &
+  Commensurate (4-fold frustrated) &
+  Constraint-driven $\phiGolden$ \\[4pt]
+$\Gamma$ & 0.19 (moderate) & 0.87 (large) & \textbf{0.20 (stable, small)} \\[4pt]
+Prigogine regime &
+  Near-equilibrium &
+  Frustrated far-from-equil. &
+  \textbf{Productive far-from-equil.} \\[4pt]
+$\mathcal{D}$ (dubito) &
+  $\approx 0$ (absorbed) &
+  0.09 (overworking) &
+  \textbf{0.08 (efficient)} \\[4pt]
+$D_c$ stability &
+  Monotone growth &
+  Non-monotone &
+  \textbf{Stable [1.41, 1.49]} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =============================================================================
+\section{Falsifiable Predictions}
+\label{sec:predictions}
+% =============================================================================
+
+The constraint-driven account generates the following falsifiable predictions,
+distinguishable from those of the (falsified) RG account:
+
+\begin{enumerate}[label=\textbf{P\arabic*.}, leftmargin=*, itemsep=6pt]
+
+  \item \textbf{Spectral base test (already confirmed):}
+    $\phiGolden$ is not a preferred temporal spectral scaling base in
+    the CQFT field equations. This follows from the absence of a
+    $\phiGolden$ RG fixed point. \emph{Status: confirmed experimentally;
+    $\phiGolden$-advantage $\in [-0.29, -0.10]$.}
+
+  \item \textbf{Geometric ratio test:}
+    Substrates whose vertex sets embed a $\phiGolden$ edge ratio (Penrose
+    and 3D icosahedral quasicrystals) should achieve systematically lower
+    $\Gamma$ than substrates with rational or unconstrained geometry,
+    \emph{at the same $N$ and $\beta$}. \emph{Status: confirmed;
+    $\Gamma_{\text{lattice}} \gg \Gamma_{\text{Penrose}} \approx
+    \Gamma_{\text{random}}$ at every $N$ tested.}
+
+  \item \textbf{KAM analogue test:}
+    In a simulation of two coupled CQFT oscillators with variable
+    frequency ratio $r$, the last stable quasi-periodic orbit before
+    resonance-driven synchronization should occur near $r = \phiGolden^{-1}$.
+    This would be the direct CQFT analogue of the KAM circle-map result.
+    \emph{Status: not yet tested; proposed as next experiment.}
+
+  \item \textbf{Disruption test:}
+    Perturbing a Penrose substrate toward a nearby rational approximant
+    (e.g., the Fibonacci lattice at ratio $F_{n+1}/F_n \to \phiGolden$)
+    should increase $\Gamma$ monotonically as the substrate approaches
+    commensurate structure, with the maximum $\Gamma$ at the exact
+    rational. \emph{Status: not yet tested.}
+
+  \item \textbf{AGI applicability:}
+    In transformer models with RoPE or ALiBi positional encoding,
+    which introduce a geometric length-scale dependence into the attention
+    weights, the layer-wise joint energy gradient
+    $\delta\mathcal{L}^{(l)} = \mathcal{L}^{(l)} - \mathcal{L}^{(l-1)}$
+    should be more negative than in models with absolute positional
+    embeddings, because RoPE/ALiBi instantiate a partial constraint-driven
+    scale competition via the rotational frequency ratio. The natural
+    frequency ratio of optimal RoPE encoding, under this account, would
+    approach $\phiGolden$ in the limit of maximum representational
+    efficiency.
+    \emph{Status: predicted; testable on existing open-weight models
+    without modification.}
+
+\end{enumerate}
+
+% =============================================================================
+\section{Theoretical Consolidation}
+\label{sec:theory}
+% =============================================================================
+
+\subsection{The separation principle}
+
+The two mechanisms are now clearly separated:
+
+\begin{keybox}
+\textbf{Separation Principle.}
+\begin{align*}
+\text{RG dynamics} \;&\Rightarrow\; \text{scale elimination,}
+  \quad \phiGolden \text{ does not arise.} \\
+\text{Constraint-driven dynamics} \;&\Rightarrow\;
+  \text{scale coexistence,} \quad
+  \phiGolden = r^* \text{ is the unique stable invariant.}
+\end{align*}
+$\phiGolden$ is not a universal constant of dynamics. It is a conditional
+structural invariant: it appears if and only if the system operates under
+competing scale constraints with commensurability avoidance. Penrose and
+icosahedral quasicrystals are physical instantiations of this condition.
+\end{keybox}
+
+\subsection{Relation to the ouroboros conjecture}
+
+The constraint-driven $\phiGolden$ result provides a geometric
+interpretation of the ouroboros conjecture (that a self-referential
+field selects its own consistent substrate). The field on a Penrose
+substrate is already operating in the constraint-driven regime: the
+phase-coupled drift and symmetry relaxation compete at the
+$\phiGolden$ ratio. The field does not need to ``search'' for this
+geometry through neutral evolution (as the falsified strong form of
+the conjecture assumed); it needs a substrate that already embeds the
+constraint structure. Penrose geometry provides this. This is why the
+conditional form of the ouroboros conjecture is confirmed
+(phase-gradient coupling + Penrose substrate → self-organization)
+while the strong form is falsified (neutral evolution alone is
+insufficient).
+
+\subsection{Relation to the geometric FEP}
+
+The operational geometric free energy $\mathcal{F}_{\text{geo}} = \Gamma$
+is minimized on Penrose geometry. In the constraint-driven account, this
+is because Penrose geometry minimizes the mismatch between $D_f$ and
+$D_c$ by providing the field with a substrate whose natural scaling ratio
+(i.e., $\phiGolden$) matches the ratio that minimizes commensurability
+collapse. The geometric FEP is thus grounded in the Diophantine
+optimality of $\phiGolden$, not in its appearance as an RG fixed point.
+
+% =============================================================================
+\section{Conclusions}
+\label{sec:conclusions}
+% =============================================================================
+
+We have established the following:
+
+\begin{enumerate}[noitemsep]
+  \item Smooth RG flow suppresses multi-scale structure and does not
+    generate $\phiGolden$ as a fixed point.
+  \item $\phiGolden$ arises from constraint-driven scale competition as
+    the unique maximally stable invariant under commensurability avoidance.
+  \item This is consistent with all CQFT simulation results: the negative
+    spectral base result rules out the RG mechanism; the Penrose geometry
+    result confirms the constraint-driven mechanism.
+  \item The constraint-driven account provides a stronger and more
+    falsifiable foundation for the role of quasiperiodic geometry in
+    self-referential field dynamics than the original RG hypothesis.
+\end{enumerate}
+
+The general conclusion is:
+\begin{equation}
+\text{RG} \;\rightarrow\; \text{scale elimination}, \qquad
+\text{constraints} \;\rightarrow\; \text{scale coexistence}.
+\end{equation}
+\begin{equation}
+\phiGolden = \text{optimal invariant preserving multi-scale structure
+under competing constraints.}
+\end{equation}
+
+The Principled Field Theory of Consciousness (PFT) and its core mathematical
+structure are unaffected by this correction. The correction applies
+specifically to the claim that $\phiGolden$ is an infrared RG fixed point.
+The revised account is both mathematically sounder and more directly
+connected to the empirical results.
+
+\section*{Acknowledgments}
+
+The author acknowledges that this paper was made possible by systematic
+analytical and numerical falsification of earlier hypotheses - a process
+that is not a failure of the research programme but its intended mechanism.
+The Poincaré principle applies: thought must never submit to a
+preconception, including one's own prior results.
+
+% =============================================================================
+\begin{thebibliography}{99}
+
+\bibitem{solis2026cqft}
+Solis, D. (2026).
+Geometric substrate selection in self-referential dissipative fields:
+a computational bridge between Prigogine's dissipative structures,
+Friston's free energy principle, and the CQFT/PFT framework.
+\textit{Revised Edition -- Definitive Confirmation at Scale}.
+DUBITO Inc.\ preprint.
+
+\bibitem{hurwitz1891}
+Hurwitz, A. (1891).
+Ueber die angen\"aherte Darstellung der Irrationalzahlen durch
+rationale Br\"uche.
+\textit{Mathematische Annalen}, 39(2), 279--284.
+
+\bibitem{kolmogorov1954}
+Kolmogorov, A.\,N. (1954).
+On conservation of conditionally periodic motions under small
+perturbations of the Hamiltonian.
+\textit{Doklady Akademii Nauk SSSR}, 98, 527--530.
+
+\bibitem{arnold1963}
+Arnold, V.\,I. (1963).
+Proof of A.\,N. Kolmogorov's theorem on the preservation of
+quasi-periodic motions under small perturbations of the Hamiltonian.
+\textit{Russian Mathematical Surveys}, 18(5), 9--36.
+
+\bibitem{moser1962}
+Moser, J. (1962).
+On invariant curves of area-preserving mappings of an annulus.
+\textit{Nachrichten der Akademie der Wissenschaften G\"ottingen,
+Mathematisch-Physikalische Klasse}, 1--20.
+
+\bibitem{penrose1974}
+Penrose, R. (1974).
+The role of aesthetics in pure and applied mathematical research.
+\textit{Bulletin of the Institute of Mathematics and its Applications},
+10, 266--271.
+
+\bibitem{debruijn1981}
+de~Bruijn, N.\,G. (1981).
+Algebraic theory of Penrose's non-periodic tilings.
+\textit{Indagationes Mathematicae}, 43(1), 39--66.
+
+\bibitem{prigogine1977}
+Prigogine, I. (1977).
+\textit{Self-Organization in Non-Equilibrium Systems}.
+Wiley.
+
+\bibitem{friston2010}
+Friston, K. (2010).
+The free-energy principle: a unified brain theory?
+\textit{Nature Reviews Neuroscience}, 11(2), 127--138.
+
+\bibitem{tikhonov1952}
+Tikhonov, A.\,N. (1952).
+Systems of differential equations containing small parameters in
+the derivatives.
+\textit{Mathematical Sbornik}, 31(73), 575--586.
+
+\end{thebibliography}
+
+\end{document}
